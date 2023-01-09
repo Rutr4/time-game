@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/game-1.css">
     <title>time-game</title>
 </head>
 <body>
@@ -17,9 +18,20 @@
         </header>
         <!-- !MAIN -->
         <main>
-            <section class="rules">
-                <p>Необходимо определить, сколько времни (в секундах) объект находится в действии </p>
-            </section>
+            <div class="game-wrapper">
+                <div class="rules">
+                    <h1>Правила:</h1>
+                    <p>Необходимо определить, сколько времни (в секундах) объект находится в действии </p>
+                </div>
+                <div class="game">
+                    
+                </div>
+                <div class="controls">
+                    <button type="button" class="btn btn-fill" onclick="start()">Начать</button>
+                    <input type="text" class="input" placeholder="Введите время" size="2" id="time-check">
+                    <button type="button" class="btn btn-fill" onclick="check()">Проверить</button>
+                </div>
+            </div>
         </main>
         <!-- !FOOTER -->
         <footer>

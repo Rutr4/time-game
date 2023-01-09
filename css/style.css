@@ -33,9 +33,9 @@ body {
 /* - - - - - - - - - - - */
 
 .body-wrapper {
+  min-height: 100%;
   display: flex;
   flex-direction: column;
-  min-height: 100%;
 }
 
 header {
@@ -57,12 +57,16 @@ footer {
 }
 
 h1{
-  margin: 15px;
+  margin: 5px;
+  font-size: 1.5em;
   font-weight: 800;
   letter-spacing: 0.4em;
   text-transform: uppercase;
   text-shadow: 0 0 10px #9C4A1A;
 }
+
+/* - - - - - - - - - - - */
+/* - - - - - - - - - - - */
 
 .menu {
   width: 50%;
@@ -75,6 +79,7 @@ h1{
 .menu .input {
   border: 1px solid black;
   width: 50%;
+  text-align: center;
   font-size: 1em;
   height: 50px;
   margin: 15px;
