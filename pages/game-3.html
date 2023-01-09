@@ -18,9 +18,17 @@
         </header>
         <!-- !MAIN -->
         <main>
-            <section class="rules">
-                <p>По заданному маршруту и за заданное время нужно передвинуть персонажа до его дома</p>
-            </section>
+            <div class="game-wrapper">
+                <div class="rules">
+                    <p>Проводите персонажей к их домам по заданным маршрутам</p>
+                    <p>Нужно успеть за отведённое время</p>
+                </div>
+                <div class="controls">
+                    <button type="button" class="btn btn-fill" onclick="start()">Начать</button>
+                    <input type="text" class="input" placeholder="Введите имя" size="25" id="name">
+                    <button type="button" class="btn btn-fill" onclick="start()">Проверить</button>
+                </div>
+            </div>
         </main>
         <!-- !FOOTER -->
         <footer>
