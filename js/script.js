@@ -8,7 +8,7 @@ function getRandomInt(min, max) {
 }
 
 let time = 0;
-let level = 7;
+let level = 8;
 let points = 0;
 
 const colorTxtEng = ["yellow", "blue", "green", "black", "purple", "pink"];
@@ -82,7 +82,7 @@ function generateFigure(iterator) {
   return figureContainer;
 }
 
-const elem = document.getElementById("");
+const elem = document.getElementById("0");
 
 //move(elem);
 
