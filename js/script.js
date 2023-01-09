@@ -82,8 +82,6 @@ function generateFigure(iterator) {
   return figureContainer;
 }
 
-// todo ДОБАВИТЬ RESET уровня, если элементы наехали друг на друга
-
 const elem = document.getElementById("");
 
 //move(elem);
