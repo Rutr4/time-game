@@ -1,6 +1,7 @@
 const workspace = document.querySelector(".workspace");
 // const testBtn = document.querySelector(".js-btn-test");
 
+//Получить случайное число в диапазоне [min; max)
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -11,8 +12,9 @@ let time = 0;
 let level = 8;
 let points = 0;
 
-const colorTxtEng = ["yellow", "blue", "green", "black", "purple", "pink"];
+const colorTxtEng = ["red", "yellow", "blue", "green", "black", "purple", "pink"];
 const colorTxtRus = [
+  "красный",
   "жёлтый",
   "синий",
   "зелёный",
@@ -32,12 +34,8 @@ init();
 console.log(workspace.getBoundingClientRect());
 
 function init() {
-    let count = 0;
-    if (level>4) {
-        count = getRandomInt(5, 9)
-    }else{
-        count = level;
-    }
+  let count = 0;
+  count = level;
   for (let i = 0; i < count; i++) {
     workspace.appendChild(generateFigure(i));
   }
@@ -62,18 +60,18 @@ function generateFigure(iterator) {
   figureContainer.style.top =
     getRandomInt(
       0,
-      (workspace.getBoundingClientRect().height - size[sizePicker])
+      workspace.getBoundingClientRect().height - size[sizePicker]
     ) + "px";
   figureContainer.style.left =
     getRandomInt(
       0,
-      (workspace.getBoundingClientRect().width - size[sizePicker])
+      workspace.getBoundingClientRect().width - size[sizePicker]
     ) + "px";
 
-  console.log(colorTxtRus[colorPicker])
+  console.log(colorTxtRus[colorPicker]);
   console.log("left =>" + figureContainer.style.left);
   console.log("top =>" + figureContainer.style.top);
-  console.log(size[sizePicker]);    
+  console.log(size[sizePicker]);
 
   //   figureContainer.addEventListener("pointerdown", (e) => {
   //     handleImgPartCaptured(e, workspace);
@@ -82,11 +80,12 @@ function generateFigure(iterator) {
   return figureContainer;
 }
 
-const elem = document.getElementById("0");
+//todo нужно будет найти ВСЕ объекты, удовлетворяющие условию, чтобы можно было нажать на любой
+//const elem = document.getElementById("0");
 
-//move(elem);
+//action(elem);
 
-function move(elem) {
+function action(elem) {
   time = getRandomInt(1000, 8000);
   elem.animate(
     [
@@ -97,4 +96,12 @@ function move(elem) {
     ],
     time
   );
+}
+
+function check(figure) {
+  if (figure) {
+    points += 100;
+  } else {
+    points -= 100;
+  }
 }

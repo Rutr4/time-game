@@ -23,14 +23,14 @@
             <div class="game-wrapper">
                 <div class="rules">
                     <h1>Правила:</h1>
-                    <p>Необходимо определить, сколько времни (в секундах) объект находится в действии </p>
+                    <p>Необходимо определить, сколько времени объект, удовлетворяющий условию, находится в действии.</p>
                 </div>
                 <div class="workspace"></div>
                 
                 <div class="controls">
-                    <button type="button" class="btn btn-fill" onclick="start()">Начать</button>
+                    <button type="button" class="btn btn-fill" onclick="startGame()">Начать</button>
                     <button type="button" class="btn btn-fill" onclick="restart()">Обновить</button>
-                    <input type="text" class="input" placeholder="Введите время" size="25" id="time-check">
+                    <input type="text" id="input-time" class="input" placeholder="Введите время" size="25" id="time-check">
                     <button type="button" class="btn btn-fill" onclick="check()">Проверить</button>
                 </div>
             </div>
@@ -39,10 +39,11 @@
         <footer>
             <p>Проект выполнил Мурадян Артур, з3530903/00302</p>
         </footer>
-        <!--todo добавить кнопки ресет+начать-->
+
+
+
         <!--todo добавить вывод очков и уровня-->
-        <!--!изменить название скрипта-->
-        <script src="../js/script.js"></script>
+        <script src="../js/script-1.js"></script>
     </div>
 </body>
 
