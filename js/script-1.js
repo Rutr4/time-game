@@ -88,44 +88,49 @@ function generateFigure(iterator) {
   return figureContainer;
 }
 
-//todo нужно будет найти ВСЕ объекты, удовлетворяющие условию, чтобы можно было нажать на любой
-const elems = document.getElementsByClassName("figure");
-console.log(elems);
-//action(elem);
-action();
+let elems = document.getElementsByClassName("figure");
+
+//action();
 
 function action() {
   time = getRandomInt(1000, 8000);
   let switcher = getRandomInt(1, 4);
   let animation = null;
 
-  console.log(time);
-  console.log(switcher);
   switch (switcher) {
     case 1:
-      animation = appearancing(time);
+      animation = appearancing();
       break;
     case 2:
-      animation = moving(time);
+      animation = moving();
       break;
     case 3:
-      animation = scaling(time);
+      animation = scaling();
       break;
     default:
       alert("alert");
   }
 
-  elems.forEach((element) => {
+
+
+  //!не получается
+  console.log(animation);
+  elms.forEach((element) => {
     animation(element);
   });
 
-  function appearancing(elem, time) {
+  for (let index = 0; index < elems.length; index++) {
+    const element = elems[index];
+    animation(element);
+  }
+ //!не получается
+  function appearancing(elem) {
     elem.animate(
       [{ transform: "opacity(0.1)" }, { transform: "opacity(1)" }],
       time
     );
   }
-  function moving(elem, time) {
+  function moving(elem) {
     elem.animate(
       [
         { transform: "scale(0.5)" },
@@ -136,7 +141,7 @@ function action() {
       time
     );
   }
-  function scaling(elem, time) {
+  function scaling(elem) {
     elem.animate(
       [
         { transform: "scale(0.1)" },
