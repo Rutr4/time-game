@@ -1,22 +1,16 @@
 const workspace = document.querySelector(".workspace");
 const controls = document.querySelector(".controls");
 const elems = document.getElementsByClassName("figure");
-//const htmlName = document.getElementById("name");
+const htmlName = document.getElementById("name");
 const htmlPoints = document.getElementById("points");
+const htmlLevel = document.getElementById("level");
 
 //! ЗАМЕНИТЬ ИМЯ В HEADER'е
-let paragraph = document.createTextNode("p");
-let name = "Игрок";
-let points = 0;
-let level = 4;
-let time = 0;
+let playerName = "ДОБАВИТЬ ИМЯ, ВВЕДЁННОЁ В ГЛАВНОМ МЕНЮ";
 let playerTime = 0;
-
-const size = [100, 50, 25];
-const sizeTxt = ["большой", "средний", "маленький"];
-
-const shape = [0, 50];
-const shapeTxt = ["квадрат", "круг"];
+let playerPoints = 0;
+let level = 1;
+let time = 0;
 
 const colorTxtEng = [
   "orange",
@@ -43,14 +37,30 @@ const colorTxtRus = [
   "чёрный",
 ];
 
-htmlPoints.prepend();
-htmlPoints.append();
+const size = [100, 50, 25];
+const sizeTxt = ["большой", "средний", "маленький"];
+
+const shape = [0, 50];
+const shapeTxt = ["квадрат", "круг"];
+
+/************************************************************/
+
+htmlName.textContent = "Имя игрока: " + playerName; 
+htmlPoints.textContent = "Очки: " + playerPoints; 
+htmlLevel.textContent = "Уровень: " + level; 
 
 // кнопки и инпуты, взаимодействие
 function startGame() {
-  //todo убрать кнопку "начать", добавить остальные инпуты и кнопки
+  const startBtn = document.getElementById("start-game");
+  startBtn.remove();
+
+  const refreshBtn = document.createElement('button');
+  const inputTime = document.createElement('button');
+  const checkBtn = document.createElement('button');
+
+//https://ru.hexlet.io/qna/javascript/questions/kak-dobavit-onclick-k-knopke-cherez-js#:~:text=%D0%A1%D0%B2%D0%BE%D0%B9%D1%81%D1%82%D0%B2%D0%BE%20onclick%20%D1%83%20%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%20%D0%BE%D1%82%D0%B2%D0%B5%D1%87%D0%B0%D0%B5%D1%82,%2F%2F%20%D0%94%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D1%8F%D0%B5%D0%BC%20%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D1%83%20%D1%81%D0%BE%D0%B1%D1%8B%D1%82%D0%B8%D1%8F%20element.
+
   init();
-  console.log(elems);
   action();
 }
 function refresh() {
@@ -63,17 +73,18 @@ function refresh() {
   init();
   action();
 }
-function check(playerTime) {
+function check() {
   playerTime = document.getElementById("input-time").value * 1000;
 
   if (Math.abs(time - playerTime) <= 850) {
-    points += 100;
+    playerPoints += 100;
     alert("good");
   } else {
-    points -= 100;
+    playerPoints -= 100;
     alert("bad");
   }
 
+  //? добавить текст перед controls (prepend)
   // const newParagraph = document.createElement("p");
   // newParagraph.innerHTML = `<b>У вас получилось ! поздравляю !<b>`; //выбор цвета фона, чётные - class1, нечётные - class2
   // workspace.append(newParagraph);

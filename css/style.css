@@ -40,13 +40,15 @@ body {
 }
 
 header, footer  {
+  height: 1.5em;
   background-color: peru;
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 header{
   border-bottom: 1px dashed black;
-  justify-content: right;
+  justify-content: space-evenly;
 }
 footer{
   border-top: 1px dashed black;
@@ -95,7 +97,7 @@ h1{
   text-align: center;
   font-size: 1em;
   height: 50px;
-  margin: 15px;
+  margin: 25px 15px;
   font-family: inherit;
 }
 

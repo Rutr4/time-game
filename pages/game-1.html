@@ -14,11 +14,10 @@
     <div class="body-wrapper">
         <!-- !HEADER -->
         <header>
-            <P id="name">Имя игрока: </P>
-            <!--? добавить здесь доп параграф ?--> 
-            <p id="points">Очки: </p>
-            <!--? добавить здесь доп параграф ?--> 
-            <button type="button" class="button" id="main-menu">Главное меню</button>
+            <P id="name"></P>
+            <p id="points"></p>
+            <p id="level"></p>
+            <button type="button" class="btn-header" id="main-menu">Выйти в меню</button>
         </header>
         <!-- !MAIN -->
         <main>
@@ -28,11 +27,12 @@
                     <p>Необходимо определить, сколько времени объект, удовлетворяющий условию, находится в действии.</p>
                 </div>
                 <div class="workspace"></div>
-                
+
                 <div class="controls">
                     <button id="start-game" type="button" class="btn btn-fill" onclick="startGame()">Начать</button>
                     <button id="refresh" type="button" class="btn btn-fill" onclick="refresh()">Обновить</button>
-                    <input id="input-time" type="text" class="input" placeholder="Введите время" size="25" id="time-check">
+                    <input id="input-time" type="text" class="input" placeholder="Введите время" size="25"
+                        id="time-check">
                     <button id="check" type="button" class="btn btn-fill" onclick="check()">Проверить</button>
                 </div>
             </div>
@@ -42,9 +42,6 @@
             <p>Проект выполнил Мурадян Артур, з3530903/00302</p>
         </footer>
 
-
-
-        <!--todo добавить вывод очков и уровня-->
         <script src="../js/script-1.js"></script>
     </div>
 </body>
