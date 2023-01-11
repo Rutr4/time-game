@@ -1,10 +1,11 @@
 const workspace = document.querySelector(".workspace");
 const controls = document.querySelector(".controls");
 
+let name = "Игрок";
+let points = 0;
+let level = 3;
 let time = 0;
 let playerTime = 0;
-let level = 8;
-let points = 0;
 
 const colorTxtEng = [
   "orange",
@@ -57,7 +58,7 @@ function generateFigure(iterator) {
 
   figureContainer.classList.add("figure");
   figureContainer.id = iterator;
-  figureContainer.style.cursor = "pointer";
+  //figureContainer.style.cursor = "pointer";
   figureContainer.style.position = "absolute";
   figureContainer.style.border = "2px solid black";
 
@@ -81,16 +82,12 @@ function generateFigure(iterator) {
   //   console.log("top =>" + figureContainer.style.top);
   //   console.log(size[sizePicker]);
 
-  //   figureContainer.addEventListener("pointerdown", (e) => {
-  //     handleImgPartCaptured(e, workspace);
-  //   });
-
   return figureContainer;
 }
 
 let elems = document.getElementsByClassName("figure");
 
-//action();
+action();
 
 function action() {
   time = getRandomInt(1000, 8000);
@@ -99,36 +96,31 @@ function action() {
 
   switch (switcher) {
     case 1:
-      animation = appearancing();
+      animation = appearancing;
       break;
     case 2:
-      animation = moving();
+      animation = moving;
       break;
     case 3:
-      animation = scaling();
+      animation = scaling;
       break;
     default:
       alert("alert");
   }
 
-
-
   //!не получается
-  console.log(animation);
-  elms.forEach((element) => {
-    animation(element);
-  });
+  // elems.forEach((element) => {
+  //   animation(element);
+  // });
+  //!не получается
 
   for (let index = 0; index < elems.length; index++) {
     const element = elems[index];
     animation(element);
   }
- //!не получается
+
   function appearancing(elem) {
-    elem.animate(
-      [{ transform: "opacity(0.1)" }, { transform: "opacity(1)" }],
-      time
-    );
+    elem.animate([{ opacity: 0.01 }, { opacity: 1 }], time);
   }
   function moving(elem) {
     elem.animate(
@@ -172,7 +164,7 @@ function checkTime(playerTime) {
 function startGame() {
   init();
   //todo убрать кнопку "начать", добавить остальные инпуты и кнопки
-  animate();
+  action();
 }
 
 //Получить случайное число в диапазоне: [min; max)

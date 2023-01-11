@@ -40,6 +40,7 @@ body {
 }
 
 header, footer  {
+  background-color: peru;
   display: flex;
   flex-direction: row;
 }
