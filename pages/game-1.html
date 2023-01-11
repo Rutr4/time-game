@@ -14,8 +14,10 @@
     <div class="body-wrapper">
         <!-- !HEADER -->
         <header>
-            <P>Имя игрока: </P>
-            <p>Очки: </p>
+            <P id="name">Имя игрока: </P>
+            <!--? добавить здесь доп параграф ?--> 
+            <p id="points">Очки: </p>
+            <!--? добавить здесь доп параграф ?--> 
             <button type="button" class="button" id="main-menu">Главное меню</button>
         </header>
         <!-- !MAIN -->
@@ -28,10 +30,10 @@
                 <div class="workspace"></div>
                 
                 <div class="controls">
-                    <button type="button" class="btn btn-fill" onclick="startGame()">Начать</button>
-                    <button type="button" class="btn btn-fill" onclick="restart()">Обновить</button>
-                    <input type="text" id="input-time" class="input" placeholder="Введите время" size="25" id="time-check">
-                    <button type="button" class="btn btn-fill" onclick="check()">Проверить</button>
+                    <button id="start-game" type="button" class="btn btn-fill" onclick="startGame()">Начать</button>
+                    <button id="refresh" type="button" class="btn btn-fill" onclick="refresh()">Обновить</button>
+                    <input id="input-time" type="text" class="input" placeholder="Введите время" size="25" id="time-check">
+                    <button id="check" type="button" class="btn btn-fill" onclick="check()">Проверить</button>
                 </div>
             </div>
         </main>

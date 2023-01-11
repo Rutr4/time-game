@@ -1,11 +1,22 @@
 const workspace = document.querySelector(".workspace");
 const controls = document.querySelector(".controls");
+const elems = document.getElementsByClassName("figure");
+//const htmlName = document.getElementById("name");
+const htmlPoints = document.getElementById("points");
 
+//! ЗАМЕНИТЬ ИМЯ В HEADER'е
+let paragraph = document.createTextNode("p");
 let name = "Игрок";
 let points = 0;
-let level = 3;
+let level = 4;
 let time = 0;
 let playerTime = 0;
+
+const size = [100, 50, 25];
+const sizeTxt = ["большой", "средний", "маленький"];
+
+const shape = [0, 50];
+const shapeTxt = ["квадрат", "круг"];
 
 const colorTxtEng = [
   "orange",
@@ -32,19 +43,45 @@ const colorTxtRus = [
   "чёрный",
 ];
 
-const size = [100, 50, 25];
-const sizeTxt = ["большой", "средний", "маленький"];
+htmlPoints.prepend();
+htmlPoints.append();
 
-const shape = [0, 50];
-const shapeTxt = ["квадрат", "круг"];
+// кнопки и инпуты, взаимодействие
+function startGame() {
+  //todo убрать кнопку "начать", добавить остальные инпуты и кнопки
+  init();
+  console.log(elems);
+  action();
+}
+function refresh() {
+  //очистка workspace
+  let amount = elems.length;
+  for (let i = 0; i < amount; i++) {
+    workspace.removeChild(elems[0]);
+    console.log(elems);
+  }
+  init();
+  action();
+}
+function check(playerTime) {
+  playerTime = document.getElementById("input-time").value * 1000;
+
+  if (Math.abs(time - playerTime) <= 850) {
+    points += 100;
+    alert("good");
+  } else {
+    points -= 100;
+    alert("bad");
+  }
+
+  // const newParagraph = document.createElement("p");
+  // newParagraph.innerHTML = `<b>У вас получилось ! поздравляю !<b>`; //выбор цвета фона, чётные - class1, нечётные - class2
+  // workspace.append(newParagraph);
+}
 
 // добавление фигур на страницу
-init();
-
 function init() {
-  let count = 0;
-  count = level;
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < level; i++) {
     workspace.appendChild(generateFigure(i));
   }
 }
@@ -58,7 +95,6 @@ function generateFigure(iterator) {
 
   figureContainer.classList.add("figure");
   figureContainer.id = iterator;
-  //figureContainer.style.cursor = "pointer";
   figureContainer.style.position = "absolute";
   figureContainer.style.border = "2px solid black";
 
@@ -77,20 +113,13 @@ function generateFigure(iterator) {
       workspace.getBoundingClientRect().width - size[sizePicker]
     ) + "px";
 
-  //   console.log(colorTxtRus[colorPicker]);
-  //   console.log("left =>" + figureContainer.style.left);
-  //   console.log("top =>" + figureContainer.style.top);
-  //   console.log(size[sizePicker]);
-
   return figureContainer;
 }
 
-let elems = document.getElementsByClassName("figure");
-
-action();
-
+// анимация
 function action() {
-  time = getRandomInt(1000, 8000);
+  //! изменить max время
+  time = getRandomInt(1000, 2000);
   let switcher = getRandomInt(1, 4);
   let animation = null;
 
@@ -108,12 +137,7 @@ function action() {
       alert("alert");
   }
 
-  //!не получается
-  // elems.forEach((element) => {
-  //   animation(element);
-  // });
-  //!не получается
-
+  // перебор фигур
   for (let index = 0; index < elems.length; index++) {
     const element = elems[index];
     animation(element);
@@ -149,25 +173,7 @@ function action() {
   }
 }
 
-//проверка ввода времени пользователя и заданным, начисление очков
-function checkTime(playerTime) {
-  playerTime = document.getElementById("input-time").value * 1000;
-
-  //можно немного уменьшить сравнительное число "500"
-  if (Math.abs(time - playerTime) <= 500) {
-    points += 100;
-  } else {
-    points -= 100;
-  }
-}
-
-function startGame() {
-  init();
-  //todo убрать кнопку "начать", добавить остальные инпуты и кнопки
-  action();
-}
-
-//Получить случайное число в диапазоне: [min; max)
+// получить случайное число в диапазоне: [min; max)
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
