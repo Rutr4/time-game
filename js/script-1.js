@@ -5,11 +5,32 @@ const htmlName = document.getElementById("name");
 const htmlPoints = document.getElementById("points");
 const htmlLevel = document.getElementById("level");
 
+/************************************************************/
+
+const btnRefresh = document.createElement("button");
+btnRefresh.classList.add("btn", "btn-fill");
+btnRefresh.setAttribute("type", "button");
+btnRefresh.textContent = "Заново";
+
+const btnCheck = document.createElement("button");
+btnCheck.classList.add("btn", "btn-fill");
+btnCheck.setAttribute("type", "button");
+btnCheck.textContent = "Проверить";
+
+const inputTime = document.createElement("input");
+inputTime.classList.add("input");
+inputTime.setAttribute("type", "text");
+inputTime.setAttribute("placeholder", "Введите время (сек)");
+inputTime.setAttribute("size", "25");
+
+/************************************************************/
+
 //! ЗАМЕНИТЬ ИМЯ В HEADER'е
+let stopwatch = "00:00:00"
 let playerName = "ДОБАВИТЬ ИМЯ, ВВЕДЁННОЁ В ГЛАВНОМ МЕНЮ";
 let playerTime = 0;
 let playerPoints = 0;
-let level = 1;
+let level = 3;
 let time = 0;
 
 const colorTxtEng = [
@@ -58,32 +79,18 @@ function startGame() {
 
   //!! ПОТОМ РАСКОММЕНТИРОВАТЬ И ИСПОЛЬЗОВАТЬ ONCLICK!!//
   /*
-  const btnRefresh = document.createElement("button");
-  btnRefresh.classList.add("btn", "btn-fill");
-  btnRefresh.setAttribute("type", "button");
-  btnRefresh.textContent = "Заново";
-  
-  const btnCheck = document.createElement("button");
-  btnCheck.classList.add("btn", "btn-fill");
-  btnCheck.setAttribute("type", "button");
-  btnCheck.textContent = "Проверить";
-
-  const inputTime = document.createElement("input");
-  inputTime.classList.add("input");
-  inputTime.setAttribute("type", "text");
-  inputTime.setAttribute("placeholder", "Введите время (сек)");
-  inputTime.setAttribute("size", "25");
-  
   controls.append(btnRefresh);
   controls.append(inputTime);
   controls.append(btnCheck);
   */
+  
   //onclick
   //https://ru.hexlet.io/qna/javascript/questions/kak-dobavit-onclick-k-knopke-cherez-js#:~:text=%D0%A1%D0%B2%D0%BE%D0%B9%D1%81%D1%82%D0%B2%D0%BE%20onclick%20%D1%83%20%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%20%D0%BE%D1%82%D0%B2%D0%B5%D1%87%D0%B0%D0%B5%D1%82,%2F%2F%20%D0%94%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D1%8F%D0%B5%D0%BC%20%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D1%83%20%D1%81%D0%BE%D0%B1%D1%8B%D1%82%D0%B8%D1%8F%20element.
 
   init();
   action();
 }
+
 function refresh() {
   //очистка workspace
   let amount = elems.length;
@@ -94,20 +101,25 @@ function refresh() {
   init();
   action();
 }
+
 function check() {
   playerTime = document.getElementById("input-time").value * 1000;
 
   if (Math.abs(time - playerTime) <= 850) {
-    playerPoints += 100;
-    alert("good");
+    playerPoints += (level++)*100;
   } else {
-    playerPoints -= 100;
+    playerPoints -= (level--)*100;
     alert("bad");
   }
-
+  
   htmlPoints.textContent = "Очки: " + playerPoints;
   htmlLevel.textContent = "Уровень: " + level;
-  //?норм ли подкрасить input в красный/зелёный цвет, убрать кнопки с timedelay'ем и оставить НАЧАТЬ ИГРУ
+  alert("good");
+  //todo const checkBtn = document.getElementById("check");
+  //todo checkBtn.setAttribute("disabled", "disabled");
+
+  //todo  ПРИ НАЧИСЛЕНИИ ОЧКОВ УВЕЛИЧИВАТЬ НЕМНОГО САМО ЗНАЧЕНИЕ SCALE 1 -> 1.5 -> 1
+  //todo подкрасить input в красный/зелёный цвет, убрать кнопки с timedelay'ем и оставить НАЧАТЬ ИГРУ
 }
 
 // добавление фигур на страницу
@@ -150,7 +162,7 @@ function generateFigure(iterator) {
 // анимация
 function action() {
   //! изменить max время
-  time = getRandomInt(1000, 2000);
+  time = getRandomInt(0, 1000);
   let switcher = getRandomInt(1, 4);
   let animation = null;
 
