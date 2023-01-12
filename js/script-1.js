@@ -26,7 +26,7 @@ inputTime.setAttribute("size", "25");
 /************************************************************/
 
 //! ЗАМЕНИТЬ ИМЯ В HEADER'е
-let stopwatch = "00:00:00"
+let stopwatch = "00:00:00";
 let playerName = "ДОБАВИТЬ ИМЯ, ВВЕДЁННОЁ В ГЛАВНОМ МЕНЮ";
 let playerTime = 0;
 let playerPoints = 0;
@@ -77,13 +77,14 @@ function startGame() {
   const startBtn = document.getElementById("start-game");
   startBtn.remove();
 
+  //!! ЗАПУСТИТЬ ТАЙМЕР !!//
   //!! ПОТОМ РАСКОММЕНТИРОВАТЬ И ИСПОЛЬЗОВАТЬ ONCLICK!!//
   /*
   controls.append(btnRefresh);
   controls.append(inputTime);
   controls.append(btnCheck);
   */
-  
+
   //onclick
   //https://ru.hexlet.io/qna/javascript/questions/kak-dobavit-onclick-k-knopke-cherez-js#:~:text=%D0%A1%D0%B2%D0%BE%D0%B9%D1%81%D1%82%D0%B2%D0%BE%20onclick%20%D1%83%20%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%20%D0%BE%D1%82%D0%B2%D0%B5%D1%87%D0%B0%D0%B5%D1%82,%2F%2F%20%D0%94%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D1%8F%D0%B5%D0%BC%20%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D1%83%20%D1%81%D0%BE%D0%B1%D1%8B%D1%82%D0%B8%D1%8F%20element.
 
@@ -104,22 +105,59 @@ function refresh() {
 
 function check() {
   playerTime = document.getElementById("input-time").value * 1000;
+  let result = false;
 
   if (Math.abs(time - playerTime) <= 850) {
-    playerPoints += (level++)*100;
+    playerPoints += level++ * 100;
+    result = true;
+    //! ПОБЕДА, ПОЛУЧАЕТСЯ
+    if (level === 11) {
+      win();
+    }
+    //todo const checkBtn = document.getElementById("check");
+    //todo поменять кнопку "Проверить" на "Следующий уровень -> то же, что и Start-game"
   } else {
-    playerPoints -= (level--)*100;
-    alert("bad");
+    playerPoints -= level * 100;
+    if (level > 1) {
+      level -= 1;
+    }
   }
-  
+
+  colorize(result);
+
   htmlPoints.textContent = "Очки: " + playerPoints;
   htmlLevel.textContent = "Уровень: " + level;
-  alert("good");
-  //todo const checkBtn = document.getElementById("check");
-  //todo checkBtn.setAttribute("disabled", "disabled");
+}
 
-  //todo  ПРИ НАЧИСЛЕНИИ ОЧКОВ УВЕЛИЧИВАТЬ НЕМНОГО САМО ЗНАЧЕНИЕ SCALE 1 -> 1.5 -> 1
-  //todo подкрасить input в красный/зелёный цвет, убрать кнопки с timedelay'ем и оставить НАЧАТЬ ИГРУ
+function colorize(result) {
+  let color = "red";
+  if (result === true) {
+    color = "green";
+  }
+  htmlPoints.animate(
+    [
+      { background: color },
+      { opacity: 1 },
+      { transform: "scale(1.3)" },
+      { opacity: 0.3 },
+      { transform: "scale(0.5)" },
+      { transform: "scale(1)" },
+      { opacity: 1 },
+    ],
+    500
+  );
+  //! ЗДЕСЬ ОБРАТИТЬСЯ К СОЗДАННОМУ(В START-GAME) ИНПУТУ
+  const inputTEMP = document.getElementById("input-time");
+  inputTEMP.animate(
+    [
+      { background: color },
+      { transform: "scale(0.1)" },
+      { transform: "scale(1.1)" },
+      { transform: "transparent" },
+      { transform: color },
+    ],
+    500
+  );
 }
 
 // добавление фигур на страницу
@@ -216,6 +254,11 @@ function action() {
   }
 }
 
+function win() {
+  alert("kapets")
+  //! ОСТАНОВИТЬ ТАЙМЕР
+  //TODO передать все основные значения в локальное хранилище данных
+}
 // получить случайное число в диапазоне: [min; max)
 function getRandomInt(min, max) {
   min = Math.ceil(min);
