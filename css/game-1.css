@@ -1,6 +1,7 @@
 .controls{
   display: flex;
   flex-direction: row;
+  justify-content: space-evenly;
 }
 .btn-header{
   border: 1px solid black;

@@ -90,6 +90,12 @@ h1{
   align-items: center;
 }
 
+.menu ul{
+  display: flex;
+  flex-direction: row;
+  /*justify-content: space-evenly;*/
+}
+
 .btn,
 .input {
   border: 1px solid black;
