@@ -34,7 +34,7 @@ inputTime.setAttribute("size", "25");
 /************************************************************/
 
 //! ЗАМЕНИТЬ ИМЯ В HEADER'е
-//? секундомер игры
+/* @param stopwatch - секундомер времени игры */
 let stopwatch = "00:00";
 let sec = 0;
 let min = 0;
@@ -42,7 +42,7 @@ let min = 0;
 let playerName = "ДОБАВИТЬ ИМЯ, ВВЕДЁННОЁ В ГЛАВНОМ МЕНЮ";
 let playerTime = 0;
 let playerPoints = 0;
-let level = 1;
+let level = 11;
 let time = 0;
 
 const colorTxtEng = [
@@ -84,18 +84,17 @@ htmlLevel.textContent = "Уровень: " + level;
 
 /************************************************************/
 
-// кнопки и инпуты, взаимодействия
+// кнопки, инпуты, взаимодействия
 function startGame() {
+  init();
+  action();
+  timer();
+  
   startBtn.remove();
-
-  //!! ЗАПУСТИТЬ ТАЙМЕР !!//
 
   controls.append(btnRefresh);
   controls.append(inputTime);
   controls.append(btnCheck);
-
-  init();
-  action();
 }
 
 function refresh() {
@@ -116,7 +115,7 @@ function check() {
     playerPoints += level++ * 100;
     result = true;
 
-    //! ПОБЕДА, ПОЛУЧАЕТСЯ
+    //! ПОБЕДА
     if (level === 11) {
       win();
     }
@@ -126,7 +125,6 @@ function check() {
     btnCheck.onclick = () => {
       refresh();
       btnCheck.textContent = "Проверить";
-      console.log(btnCheck.style.fontSize);
       btnCheck.style.fontSize = "1em";
       btnCheck.onclick = () => {
         check();
@@ -152,6 +150,7 @@ function colorize(result) {
   if (result === true) {
     color = "green";
   }
+
   htmlPoints.animate(
     [
       { background: color },
@@ -164,7 +163,6 @@ function colorize(result) {
     ],
     500
   );
-
   document
     .querySelector(".input")
     .animate(
@@ -172,8 +170,6 @@ function colorize(result) {
         { background: color },
         { transform: "scale(0.1)" },
         { transform: "scale(1.1)" },
-        { transform: "transparent" },
-        { transform: color },
       ],
       500
     );
@@ -215,12 +211,10 @@ function generateFigure(iterator) {
   return figureContainer;
 }
 
-//! ДОБАВИТЬ правильную реализацию MOVING()
-//! изменить max время
 // анимация
 function action() {
-  time = getRandomInt(0, 0);
-  let switcher = getRandomInt(1, 4);
+  time = getRandomInt(1000, 7000);
+  let switcher = 2; //getRandomInt(1, 4);
   let animation = null;
 
   switch (switcher) {
@@ -247,14 +241,37 @@ function action() {
     elem.animate([{ opacity: 0.01 }, { opacity: 1 }], time);
   }
   function moving(elem) {
+    elemTop = parseInt(elem.style.top);
+    elemLeft = parseInt(elem.style.left);
+
     elem.animate(
       [
-        { transform: "scale(0.5)" },
-        { transform: "scale(0.7)" },
-        { transform: "scale(0.1)" },
-        { transform: "scale(1)" },
+        {
+          top: elemTop + "px",
+          left: elemLeft +"px",
+        },
+        {
+          top: elemTop - 25 + "px",
+          left: elemLeft - 15 + "px",
+        },
+        {
+          top: elemTop - 45 + "px",
+          left: elemLeft + 35 + "px",
+        },
+        {
+          top: elemTop + 25 + "px",
+          left: elemLeft + 35 + "px",
+        },
+        {
+          top: elemTop + 5 + "px",
+          left: elemLeft - 35 + "px",
+        },
+        {
+          top: elemTop + "px",
+          left: elemLeft +"px",
+        },
       ],
-      time
+      2000
     );
   }
   function scaling(elem) {
@@ -274,7 +291,8 @@ function action() {
 }
 
 function win() {
-  alert("kapets");
+  let stopwatchResult = stopwatch;
+  alert("kapets!! " + stopwatchResult);
   //! ОСТАНОВИТЬ ТАЙМЕР
   //TODO передать все основные значения в локальное хранилище данных
 }
@@ -288,26 +306,19 @@ function getRandomInt(min, max) {
 // реализация секундомера
 let t;
 
-function tick(){
+function tick() {
   sec++;
   if (sec >= 60) {
-      sec = 0;
-      min++;
+    sec = 0;
+    min++;
   }
 }
 function add() {
   tick();
-  stopwatch = (min > 9 ? min : "0" + min)
-          + ":" + (sec > 9 ? sec : "0" + sec);
+  stopwatch = (min > 9 ? min : "0" + min) + ":" + (sec > 9 ? sec : "0" + sec);
   timer();
 }
 function timer() {
   t = setTimeout(add, 1000);
   console.log(stopwatch);
-}
-
-timer();
-start.onclick = timer;
-stop.onclick = function() {
-  clearTimeout(t);
 }
