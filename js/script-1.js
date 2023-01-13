@@ -1,9 +1,11 @@
 const workspace = document.querySelector(".workspace");
 const controls = document.querySelector(".controls");
-const elems = document.getElementsByClassName("figure");
+const rules = document.querySelector(".rules");
 const htmlName = document.getElementById("name");
-const htmlPoints = document.getElementById("points");
 const htmlLevel = document.getElementById("level");
+const htmlPoints = document.getElementById("points");
+const htmlAction = document.getElementById("action");
+const elems = document.getElementsByClassName("figure");
 
 /************************************************************/
 
@@ -42,9 +44,13 @@ let min = 0;
 let playerName = "ДОБАВИТЬ ИМЯ, ВВЕДЁННОЁ В ГЛАВНОМ МЕНЮ";
 let playerTime = 0;
 let playerPoints = 0;
-let level = 11;
+let level = 1;
+
+let txtAnimation = "";
+/* @param time время движения объекта */
 let time = 0;
 
+// todo переименовать
 const colorTxtEng = [
   "orange",
   "purple",
@@ -57,6 +63,7 @@ const colorTxtEng = [
   "olive",
   "black",
 ];
+// todo УДАЛИТЬ
 const colorTxtRus = [
   "оранжевый",
   "фиолетовый",
@@ -89,7 +96,7 @@ function startGame() {
   init();
   action();
   timer();
-  
+
   startBtn.remove();
 
   controls.append(btnRefresh);
@@ -130,8 +137,6 @@ function check() {
         check();
       };
     };
-
-    //todo поменять кнопку "Проверить" на "Следующий уровень -> то же, что и Start-game"
   } else {
     playerPoints -= level * 100;
     if (level > 1) {
@@ -211,67 +216,61 @@ function generateFigure(iterator) {
   return figureContainer;
 }
 
-// анимация
+// анимация // todo
 function action() {
-  time = getRandomInt(1000, 7000);
-  let switcher = 2; //getRandomInt(1, 4);
-  let animation = null;
-
-  switch (switcher) {
-    case 1:
-      animation = appearancing;
-      break;
-    case 2:
-      animation = moving;
-      break;
-    case 3:
-      animation = scaling;
-      break;
-    default:
-      alert("alert");
-  }
-
-  // перебор фигур
   for (let index = 0; index < elems.length; index++) {
     const element = elems[index];
+
+    time = getRandomInt(1000, 7000);
+    let switcher = getRandomInt(1, 4);
+    let animation = null;
+
+    switch (switcher) {
+      case 1:
+        animation = appearancing;
+        txtAnimation = "появляется";
+        break;
+      case 2:
+        animation = shaking;
+        txtAnimation = "трясётся";
+        break;
+      case 3:
+        animation = scaling;
+        txtAnimation = "пульсирует";
+        break;
+      default:
+        alert("alert");
+    }
+
+    htmlAction.textContent = "Сколько времени " + txtAnimation;
+    // todo rules.append(СКОПИРОВАННЫЙ последний объект, НО С display inline-block));
+
+
+  
+
+
     animation(element);
   }
 
   function appearancing(elem) {
     elem.animate([{ opacity: 0.01 }, { opacity: 1 }], time);
   }
-  function moving(elem) {
+  function shaking(elem) {
     elemTop = parseInt(elem.style.top);
     elemLeft = parseInt(elem.style.left);
 
     elem.animate(
       [
-        {
-          top: elemTop + "px",
-          left: elemLeft +"px",
-        },
-        {
-          top: elemTop - 25 + "px",
-          left: elemLeft - 15 + "px",
-        },
-        {
-          top: elemTop - 45 + "px",
-          left: elemLeft + 35 + "px",
-        },
-        {
-          top: elemTop + 25 + "px",
-          left: elemLeft + 35 + "px",
-        },
-        {
-          top: elemTop + 5 + "px",
-          left: elemLeft - 35 + "px",
-        },
-        {
-          top: elemTop + "px",
-          left: elemLeft +"px",
-        },
+        { left: elemLeft + "px" },
+        { left: elemLeft + 10 + "px" },
+        { left: elemLeft - 10 + "px" },
+        { left: elemLeft + 10 + "px" },
+        { left: elemLeft - 10 + "px" },
+        { left: elemLeft + 10 + "px" },
+        { left: elemLeft - 10 + "px" },
+        { left: elemLeft + "px" },
       ],
-      2000
+      time
     );
   }
   function scaling(elem) {
@@ -289,7 +288,7 @@ function action() {
     );
   }
 }
-
+// победа // todo
 function win() {
   let stopwatchResult = stopwatch;
   alert("kapets!! " + stopwatchResult);
@@ -304,8 +303,6 @@ function getRandomInt(min, max) {
 }
 
 // реализация секундомера
-let t;
-
 function tick() {
   sec++;
   if (sec >= 60) {
@@ -319,6 +316,6 @@ function add() {
   timer();
 }
 function timer() {
-  t = setTimeout(add, 1000);
+  setTimeout(add, 1000);
   console.log(stopwatch);
 }
