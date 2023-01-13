@@ -7,15 +7,23 @@ const htmlLevel = document.getElementById("level");
 
 /************************************************************/
 
+const startBtn = document.getElementById("start-game");
+
 const btnRefresh = document.createElement("button");
 btnRefresh.classList.add("btn", "btn-fill");
 btnRefresh.setAttribute("type", "button");
 btnRefresh.textContent = "Заново";
+btnRefresh.onclick = () => {
+  refresh();
+};
 
 const btnCheck = document.createElement("button");
 btnCheck.classList.add("btn", "btn-fill");
 btnCheck.setAttribute("type", "button");
 btnCheck.textContent = "Проверить";
+btnCheck.onclick = () => {
+  check();
+};
 
 const inputTime = document.createElement("input");
 inputTime.classList.add("input");
@@ -26,11 +34,15 @@ inputTime.setAttribute("size", "25");
 /************************************************************/
 
 //! ЗАМЕНИТЬ ИМЯ В HEADER'е
-let stopwatch = "00:00:00";
+//? секундомер игры
+let stopwatch = "00:00";
+let sec = 0;
+let min = 0;
+
 let playerName = "ДОБАВИТЬ ИМЯ, ВВЕДЁННОЁ В ГЛАВНОМ МЕНЮ";
 let playerTime = 0;
 let playerPoints = 0;
-let level = 3;
+let level = 1;
 let time = 0;
 
 const colorTxtEng = [
@@ -74,19 +86,13 @@ htmlLevel.textContent = "Уровень: " + level;
 
 // кнопки и инпуты, взаимодействия
 function startGame() {
-  const startBtn = document.getElementById("start-game");
   startBtn.remove();
 
   //!! ЗАПУСТИТЬ ТАЙМЕР !!//
-  //!! ПОТОМ РАСКОММЕНТИРОВАТЬ И ИСПОЛЬЗОВАТЬ ONCLICK!!//
-  /*
+
   controls.append(btnRefresh);
   controls.append(inputTime);
   controls.append(btnCheck);
-  */
-
-  //onclick
-  //https://ru.hexlet.io/qna/javascript/questions/kak-dobavit-onclick-k-knopke-cherez-js#:~:text=%D0%A1%D0%B2%D0%BE%D0%B9%D1%81%D1%82%D0%B2%D0%BE%20onclick%20%D1%83%20%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%20%D0%BE%D1%82%D0%B2%D0%B5%D1%87%D0%B0%D0%B5%D1%82,%2F%2F%20%D0%94%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D1%8F%D0%B5%D0%BC%20%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D1%83%20%D1%81%D0%BE%D0%B1%D1%8B%D1%82%D0%B8%D1%8F%20element.
 
   init();
   action();
@@ -97,24 +103,36 @@ function refresh() {
   let amount = elems.length;
   for (let i = 0; i < amount; i++) {
     workspace.removeChild(elems[0]);
-    console.log(elems);
   }
   init();
   action();
 }
 
 function check() {
-  playerTime = document.getElementById("input-time").value * 1000;
+  playerTime = document.querySelector(".input").value * 1000;
   let result = false;
 
   if (Math.abs(time - playerTime) <= 850) {
     playerPoints += level++ * 100;
     result = true;
+
     //! ПОБЕДА, ПОЛУЧАЕТСЯ
     if (level === 11) {
       win();
     }
-    //todo const checkBtn = document.getElementById("check");
+
+    btnCheck.style.fontSize = "0.9em";
+    btnCheck.textContent = "Следующий уровень";
+    btnCheck.onclick = () => {
+      refresh();
+      btnCheck.textContent = "Проверить";
+      console.log(btnCheck.style.fontSize);
+      btnCheck.style.fontSize = "1em";
+      btnCheck.onclick = () => {
+        check();
+      };
+    };
+
     //todo поменять кнопку "Проверить" на "Следующий уровень -> то же, что и Start-game"
   } else {
     playerPoints -= level * 100;
@@ -146,18 +164,19 @@ function colorize(result) {
     ],
     500
   );
-  //! ЗДЕСЬ ОБРАТИТЬСЯ К СОЗДАННОМУ(В START-GAME) ИНПУТУ
-  const inputTEMP = document.getElementById("input-time");
-  inputTEMP.animate(
-    [
-      { background: color },
-      { transform: "scale(0.1)" },
-      { transform: "scale(1.1)" },
-      { transform: "transparent" },
-      { transform: color },
-    ],
-    500
-  );
+
+  document
+    .querySelector(".input")
+    .animate(
+      [
+        { background: color },
+        { transform: "scale(0.1)" },
+        { transform: "scale(1.1)" },
+        { transform: "transparent" },
+        { transform: color },
+      ],
+      500
+    );
 }
 
 // добавление фигур на страницу
@@ -197,10 +216,10 @@ function generateFigure(iterator) {
 }
 
 //! ДОБАВИТЬ правильную реализацию MOVING()
+//! изменить max время
 // анимация
 function action() {
-  //! изменить max время
-  time = getRandomInt(0, 1000);
+  time = getRandomInt(0, 0);
   let switcher = getRandomInt(1, 4);
   let animation = null;
 
@@ -255,7 +274,7 @@ function action() {
 }
 
 function win() {
-  alert("kapets")
+  alert("kapets");
   //! ОСТАНОВИТЬ ТАЙМЕР
   //TODO передать все основные значения в локальное хранилище данных
 }
@@ -264,4 +283,31 @@ function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min) + min);
+}
+
+// реализация секундомера
+let t;
+
+function tick(){
+  sec++;
+  if (sec >= 60) {
+      sec = 0;
+      min++;
+  }
+}
+function add() {
+  tick();
+  stopwatch = (min > 9 ? min : "0" + min)
+          + ":" + (sec > 9 ? sec : "0" + sec);
+  timer();
+}
+function timer() {
+  t = setTimeout(add, 1000);
+  console.log(stopwatch);
+}
+
+timer();
+start.onclick = timer;
+stop.onclick = function() {
+  clearTimeout(t);
 }
