@@ -7,3 +7,6 @@
   border: 1px solid black;
   cursor: pointer;
 }
+#action{
+  display: inline-block;
+}

@@ -6,7 +6,7 @@ const htmlLevel = document.getElementById("level");
 const htmlPoints = document.getElementById("points");
 const htmlAction = document.getElementById("action");
 const elems = document.getElementsByClassName("figure");
-
+let tempElem = null;
 /************************************************************/
 
 const startBtn = document.getElementById("start-game");
@@ -242,14 +242,8 @@ function action() {
         alert("alert");
     }
 
-    htmlAction.textContent = "Сколько времени " + txtAnimation;
-    // todo rules.append(СКОПИРОВАННЫЙ последний объект, НО С display inline-block));
-
-
-  
-
-
     animation(element);
+    clone();
   }
 
   function appearancing(elem) {
@@ -319,3 +313,16 @@ function timer() {
   setTimeout(add, 1000);
   console.log(stopwatch);
 }
+
+//!! не работает
+
+/*
+function clone() {
+  htmlAction.textContent = "Сколько времени " + txtAnimation;
+  tempElem = elems[0].cloneNode(true);
+  tempElem.style.position = "relative";
+  tempElem.style.display = "inline-block";
+  tempElem.style.top = "0px";
+  tempElem.style.left = "0px";  
+}
+*/
