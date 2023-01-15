@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <title>time-game</title>
 </head>
+
 <body>
     <div class="body-wrapper">
         <!-- !HEADER -->
@@ -16,24 +18,85 @@
         <main>
             <section class="menu">
                 <h1>Перемещение по времени</h1>
-                <input type="text" class="input" placeholder="Введите имя" size="25" id="name">
-                <button type="button" class="btn btn-fill" id="levels">Выбор уровня</button>
+                <input type="text" class="input" placeholder="Введите имя" size="30" id="name">
                 <h2>Выбор уровня</h2>
                 <ul>
-                    <input type="radio" name="game" value="game1">
-                    <input type="radio" name="game" value="game2">
-                    <input type="radio" name="game" value="game3">
+                    <input type="radio" name="game" value="Сколько времени?" checked>
+                    <label for="1">Сколько времени?</label> <br>
+                    <input type="radio" name="game" value="Успеть ко времени.">
+                    <label for="2">Успеть ко времени.</label> <br>
+                    <input type="radio" name="game" value="Временной маршрут.">
+                    <label for="3">Временной маршрут.</label>
                 </ul>
-                <!-- todo сделать выбор уровня / радио кнопки / клик по картинкам -->
-                <button type="button" class="btn btn-fill" onclick="start()">Начать игру</button>
-                <button type="button" class="btn btn-fill" id="settings">Настройки</button>
-                <button type="button" class="btn btn-fill" id="ratings">Рейтинговая таблица</button>
+                <button type="button" class="btn btn-fill" id="start">Начать игру</button>
+                <button type="button" class="btn btn-fill" id="rating">Рейтинговая таблица</button>
             </section>
         </main>
         <!-- !FOOTER -->
         <footer>
             <p>Проект выполнил Мурадян Артур, з3530903/00302</p>
         </footer>
+
+        <script>
+            document.getElementById('rating').onclick = function () {
+                window.location.href = 'pages/rating.html';
+            }
+            document.getElementById('start').onclick = function () {
+
+                <!--! создание локального хранилища массива игроков-->
+                if (localStorage.getItem("rating") === undefined || localStorage.getItem("rating") === null) {
+                    localStorage.clear();
+                    let rating = [];
+                    localStorage.setItem("rating", JSON.stringify(rating));
+                    console.log(localStorage.getItem("rating"));
+                }
+
+                console.log(localStorage.getItem("rating"));
+
+                const playerName = document.querySelector(".input").value;
+
+                if (playerName === "") {
+                    alert("Необходимо ввести имя!");
+                } else {
+                    const games = document.querySelectorAll('input[name="game"]')
+                    let gameSwitcher;
+
+                    for (const game of games) {
+                        if (game.checked) {
+                            gameSwitcher = game.value;
+                        }
+                    }
+
+                    const player = {
+                        name: playerName,
+                        score: 0,
+                        time: "",
+                        game: ""
+                    };
+
+                    // switch (gameSwitcher) {
+                    //     case "Сколько времени?":
+                    //         player.game = gameSwitcher;
+                    //         localStorage.setItem("player", JSON.stringify(player));
+                    //         window.location.href = 'pages/game-1.html';
+                    //         break;
+                    //     case "Успеть ко времени.":
+                    //         player.game = gameSwitcher;
+                    //         localStorage.setItem("player", JSON.stringify(player));
+                    //         window.location.href = 'pages/game-2.html';
+                    //         break;
+                    //     case "Временной маршрут.":
+                    //         player.game = gameSwitcher;
+                    //         localStorage.setItem("player", JSON.stringify(player));
+                    //         window.location.href = 'pages/game-3.html';
+                    //         break;
+                    //     default:
+                    //         alert("alert");
+                    // }
+                }
+            };
+        </script>
     </div>
 </body>
+
 </html>

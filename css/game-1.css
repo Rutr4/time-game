@@ -10,23 +10,3 @@
 #action{
   display: inline-block;
 }
-#main-menu{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 1rem;
-  text-align: center;
-  text-decoration: none;
-  color: #fff;
-  border: 2px solid transparent;
-  padding: 0 10px;
-  border-radius: 3rem;
-  border-color: black;
-  background-color: #fff;
-  color: #000;
-  transition: transform 0.2s cubic-bezier(0.235, 0, 0.05, 0.95);
-}
-#main-menu:hover {
-  transform: perspective(1px) scale3d(1.044, 1.044, 1) translateZ(0) !important;
-}

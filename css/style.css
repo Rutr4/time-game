@@ -67,13 +67,22 @@ main {
   width: 100%;
   flex: 1 1 auto;
   min-width: 50vw;
+  overflow: hidden;
   position: relative;
   border: 1px dashed black;
 }
 
 h1{
-  margin: 5px;
+  margin: 25px;
   font-size: 1.5em;
+  font-weight: 800;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px #9C4A1A;
+}
+h2{
+  margin: 10px;
+  font-size: 1.2em;
   font-weight: 800;
   letter-spacing: 0.4em;
   text-transform: uppercase;
@@ -90,10 +99,8 @@ h1{
   align-items: center;
 }
 
-.menu ul{
-  display: flex;
-  flex-direction: row;
-  /*justify-content: space-evenly;*/
+.menu input{
+  margin: 8px;
 }
 
 .btn,
@@ -133,4 +140,25 @@ h1{
 .btn-fill:hover::after {
   top: 0px;
   left: 0px;
+}
+
+#main-menu{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  border: 2px solid transparent;
+  padding: 0 10px;
+  border-radius: 3rem;
+  border-color: black;
+  background-color: #fff;
+  color: #000;
+  transition: transform 0.2s cubic-bezier(0.235, 0, 0.05, 0.95);
+}
+#main-menu:hover {
+  transform: perspective(1px) scale3d(1.044, 1.044, 1) translateZ(0) !important;
 }
