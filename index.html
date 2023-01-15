@@ -44,14 +44,12 @@
             document.getElementById('start').onclick = function () {
 
                 <!--! создание локального хранилища массива игроков-->
-                if (localStorage.getItem("rating") === undefined || localStorage.getItem("rating") === null) {
-                    localStorage.clear();
-                    let rating = [];
-                    localStorage.setItem("rating", JSON.stringify(rating));
+                if (localStorage.getItem('rating') == undefined || localStorage.getItem('rating') == null) {
+                    alert("123");
+                    const rating = [];
+                    localStorage.setItem('rating', JSON.stringify(rating));
                     console.log(localStorage.getItem("rating"));
                 }
-
-                console.log(localStorage.getItem("rating"));
 
                 const playerName = document.querySelector(".input").value;
 
@@ -74,25 +72,25 @@
                         game: ""
                     };
 
-                    // switch (gameSwitcher) {
-                    //     case "Сколько времени?":
-                    //         player.game = gameSwitcher;
-                    //         localStorage.setItem("player", JSON.stringify(player));
-                    //         window.location.href = 'pages/game-1.html';
-                    //         break;
-                    //     case "Успеть ко времени.":
-                    //         player.game = gameSwitcher;
-                    //         localStorage.setItem("player", JSON.stringify(player));
-                    //         window.location.href = 'pages/game-2.html';
-                    //         break;
-                    //     case "Временной маршрут.":
-                    //         player.game = gameSwitcher;
-                    //         localStorage.setItem("player", JSON.stringify(player));
-                    //         window.location.href = 'pages/game-3.html';
-                    //         break;
-                    //     default:
-                    //         alert("alert");
-                    // }
+                    switch (gameSwitcher) {
+                        case "Сколько времени?":
+                            player.game = gameSwitcher;
+                            localStorage.setItem("player", JSON.stringify(player));
+                            window.location.href = 'pages/game-1.html';
+                            break;
+                        case "Успеть ко времени.":
+                            player.game = gameSwitcher;
+                            localStorage.setItem("player", JSON.stringify(player));
+                            // window.location.href = 'pages/game-2.html';
+                            break;
+                        case "Временной маршрут.":
+                            player.game = gameSwitcher;
+                            localStorage.setItem("player", JSON.stringify(player));
+                            // window.location.href = 'pages/game-3.html';
+                            break;
+                        default:
+                            alert("alert");
+                    }
                 }
             };
         </script>
