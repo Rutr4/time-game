@@ -8,18 +8,15 @@ const htmlAction = document.getElementById("action");
 const elemsWorlspace = workspace.getElementsByClassName("figure");
 const elemsRules = rules.getElementsByClassName("figure");
 
-let tempElem = null;
 /************************************************************/
 
-JSON.stringify(stopwatch)
-//localStorage.setItem(test, )
-
+player = JSON.parse(localStorage.getItem("player"));
+rating = JSON.parse(localStorage.getItem("rating"));
 
 /************************************************************/
 
 const startBtn = document.getElementById("start-game");
 
-// todo CREATE CREATEBUTTON()
 const btnRefresh = document.createElement("button");
 btnRefresh.classList.add("btn", "btn-fill");
 btnRefresh.setAttribute("type", "button");
@@ -44,23 +41,31 @@ inputTime.setAttribute("size", "25");
 
 /************************************************************/
 
-//! ЗАМЕНИТЬ ИМЯ В HEADER'е
 /* @param stopwatch - секундомер времени игры */
 let stopwatch = "00:00";
 let sec = 0;
 let min = 0;
+let t; // для остановки секундомера
 
-let playerName = "ДОБАВИТЬ ИМЯ, ВВЕДЁННОЁ В ГЛАВНОМ МЕНЮ";
 let playerTime = 0;
 let playerPoints = 0;
-let level = 1;
+let level = 10;
 
+/* @param tempElem элемент из задания */
+/* @param txtAnimation отвечает за анимацию объекта задания */
+let tempElem = null;
 let txtAnimation = "";
+
 /* @param time время движения объекта */
 let time = 0;
 
-// todo переименовать
-const colorTxtEng = [
+const size = [100, 50, 25];
+const sizeTxt = ["большой", "средний", "маленький"];
+
+const shape = [0, 50];
+const shapeTxt = ["квадрат", "круг"];
+
+const color = [
   "orange",
   "purple",
   "red",
@@ -72,29 +77,10 @@ const colorTxtEng = [
   "olive",
   "black",
 ];
-// todo УДАЛИТЬ
-const colorTxtRus = [
-  "оранжевый",
-  "фиолетовый",
-  "красный",
-  "розовый",
-  "жёлтый",
-  "синий",
-  "зелёный",
-  "лаймовый",
-  "оливковый",
-  "чёрный",
-];
-
-const size = [100, 50, 25];
-const sizeTxt = ["большой", "средний", "маленький"];
-
-const shape = [0, 50];
-const shapeTxt = ["квадрат", "круг"];
 
 /************************************************************/
 
-htmlName.textContent = "Имя игрока: " + playerName;
+htmlName.textContent = "Имя игрока: " + player.name;
 htmlPoints.textContent = "Очки: " + playerPoints;
 htmlLevel.textContent = "Уровень: " + level;
 
@@ -161,6 +147,19 @@ function check() {
   htmlPoints.textContent = "Очки: " + playerPoints;
   htmlLevel.textContent = "Уровень: " + level;
 }
+// победа
+function win() {
+  alert("ВЫ ПОБЕДИЛИ ЗА " + stopwatch);
+
+  player.score = playerPoints;
+  player.time = stopwatch;
+
+  rating.push(player);
+  localStorage.removeItem("player");
+  localStorage.setItem("rating", JSON.stringify(rating));
+
+  window.location.href = "win.html";
+}
 
 function colorize(result) {
   let color = "red";
@@ -203,7 +202,7 @@ function generateFigure(iterator) {
 
   let sizePicker = getRandomInt(0, size.length);
   let shapePicker = getRandomInt(0, shape.length);
-  let colorPicker = getRandomInt(0, colorTxtEng.length);
+  let colorPicker = getRandomInt(0, color.length);
 
   figureContainer.classList.add("figure");
   figureContainer.id = iterator;
@@ -213,7 +212,7 @@ function generateFigure(iterator) {
   figureContainer.style.width = figureContainer.style.height =
     size[sizePicker] + "px";
   figureContainer.style.borderRadius = shape[shapePicker] + "%";
-  figureContainer.style.background = colorTxtEng[colorPicker];
+  figureContainer.style.background = color[colorPicker];
   figureContainer.style.top =
     getRandomInt(
       0,
@@ -233,7 +232,7 @@ function action() {
   for (let index = 0; index < elemsWorlspace.length; index++) {
     const element = elemsWorlspace[index];
 
-    time = getRandomInt(1000, 7000);
+    time = getRandomInt(1000, 1850);
     let switcher = getRandomInt(1, 4);
     let animation = null;
 
@@ -297,22 +296,15 @@ function action() {
 // вставка элемента в rules
 function clone() {
   htmlAction.textContent = "Сколько времени " + txtAnimation;
-  tempElem = elemsWorlspace[elemsWorlspace.length-1].cloneNode(true);
+  tempElem = elemsWorlspace[elemsWorlspace.length - 1].cloneNode(true);
   tempElem.style.position = "relative";
   tempElem.style.display = "inline-block";
   tempElem.style.top = "0px";
   tempElem.style.left = "0px";
 
-  rules.appendChild(tempElem)
+  rules.appendChild(tempElem);
 }
 
-// победа // todo
-function win() {
-  let stopwatchResult = stopwatch;
-  alert("kapets!! " + stopwatchResult);
-  //! ОСТАНОВИТЬ ТАЙМЕР
-  //TODO передать все основные значения в локальное хранилище данных
-}
 // получить случайное число в диапазоне: [min; max)
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -334,6 +326,6 @@ function add() {
   timer();
 }
 function timer() {
-  setTimeout(add, 1000);
+  t = setTimeout(add, 1000);
   console.log(stopwatch);
 }

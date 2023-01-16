@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/game-1.css">
+    <link rel="stylesheet" href="../css/rating.css">
     <title>Рейтинги</title>
 </head>
 
@@ -18,13 +18,52 @@
         </header>
         <!-- !MAIN -->
         <main>
-            
+            <table id="rating-table">
+                <tr>
+                    <th>Имя игрока</th>
+                    <th>Название игры</th>
+                    <th>Время</th>
+                    <th>Очки</th>
+                </tr>
+                <tr>
+                    <td>...</td>
+                    <td>...</td>
+                    <td>...</td>
+                    <td>...</td>
+                </tr>
+                <tr>
+                    <td>...</td>
+                    <td>...</td>
+                    <td>...</td>
+                    <td>...</td>
+                </tr>
+            </table>
         </main>
         <!-- !FOOTER -->
         <footer>
             <p>Проект выполнил Мурадян Артур, з3530903/00302</p>
         </footer>
     </div>
+    <script>
+        // выход игрока в главное меню (сохранение его в рейтинговой таблице)
+        const btnMenu = document.getElementById("main-menu");
+        btnMenu.onclick = () => { window.location.href = '../index.html'; };
+
+        // заполнение рейтинговой таблицы
+        const ratingTable = document.getElementById("rating-table");
+
+        players = JSON.parse(localStorage.getItem("rating"));
+
+        players.forEach(player => {
+            createRow(player);
+        });
+
+
+        function createRow(player) {
+            const row = document.createElement
+
+        }
+    </script>
 </body>
 
 </html>

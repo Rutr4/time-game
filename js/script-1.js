@@ -1,12 +1,13 @@
-const workspace = document.querySelector(".workspace");
-const controls = document.querySelector(".controls");
-const rules = document.querySelector(".rules");
 const htmlName = document.getElementById("name");
 const htmlLevel = document.getElementById("level");
 const htmlPoints = document.getElementById("points");
 const htmlAction = document.getElementById("action");
-const elemsWorlspace = workspace.getElementsByClassName("figure");
+const controls = document.querySelector(".controls");
+const rules = document.querySelector(".rules");
 const elemsRules = rules.getElementsByClassName("figure");
+const workspace = document.querySelector(".workspace");
+const elemsWorlspace = workspace.getElementsByClassName("figure");
+const btnMenu = document.getElementById("main-menu");
 
 /************************************************************/
 
@@ -39,6 +40,17 @@ inputTime.setAttribute("type", "text");
 inputTime.setAttribute("placeholder", "Введите время (сек)");
 inputTime.setAttribute("size", "25");
 
+// выход игрока в главное меню (сохранение его в рейтинговой таблице)
+btnMenu.onclick = () => {
+  player.score = playerPoints;
+  player.time = stopwatch;
+
+  rating.push(player);
+  localStorage.removeItem("player");
+  localStorage.setItem("rating", JSON.stringify(rating));
+
+  window.location.href = '../index.html';
+};
 /************************************************************/
 
 /* @param stopwatch - секундомер времени игры */
