@@ -6,7 +6,7 @@ const controls = document.querySelector(".controls");
 const rules = document.querySelector(".rules");
 const elemsRules = rules.getElementsByClassName("figure");
 const workspace = document.querySelector(".workspace");
-const elemsWorlspace = workspace.getElementsByClassName("figure");
+const elemsWorkspace = workspace.getElementsByClassName("figure");
 const btnMenu = document.getElementById("main-menu");
 
 /************************************************************/
@@ -70,13 +70,8 @@ let txtAnimation = "";
 
 /* @param time время движения объекта */
 let time = 0;
-
 const size = [100, 50, 25];
-const sizeTxt = ["большой", "средний", "маленький"];
-
 const shape = [0, 50];
-const shapeTxt = ["квадрат", "круг"];
-
 const color = [
   "orange",
   "purple",
@@ -114,9 +109,9 @@ function startGame() {
 
 function refresh() {
   //очистка workspace
-  let amount = elemsWorlspace.length;
+  let amount = elemsWorkspace.length;
   for (let i = 0; i < amount; i++) {
-    workspace.removeChild(elemsWorlspace[0]);
+    workspace.removeChild(elemsWorkspace[0]);
   }
   rules.removeChild(elemsRules[0]);
   init();
@@ -241,8 +236,8 @@ function generateFigure(iterator) {
 
 // анимация
 function action() {
-  for (let index = 0; index < elemsWorlspace.length; index++) {
-    const element = elemsWorlspace[index];
+  for (let index = 0; index < elemsWorkspace.length; index++) {
+    const element = elemsWorkspace[index];
 
     time = getRandomInt(1000, 1850);
     let switcher = getRandomInt(1, 4);
@@ -308,7 +303,7 @@ function action() {
 // вставка элемента в rules
 function clone() {
   htmlAction.textContent = "Сколько времени " + txtAnimation;
-  tempElem = elemsWorlspace[elemsWorlspace.length - 1].cloneNode(true);
+  tempElem = elemsWorkspace[elemsWorkspace.length - 1].cloneNode(true);
   tempElem.style.position = "relative";
   tempElem.style.display = "inline-block";
   tempElem.style.top = "0px";

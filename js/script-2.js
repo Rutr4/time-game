@@ -5,7 +5,7 @@ const htmlName = document.getElementById("name");
 const htmlLevel = document.getElementById("level");
 const htmlPoints = document.getElementById("points");
 const htmlAction = document.getElementById("action");
-const elemsWorlspace = workspace.getElementsByClassName("figure");
+const elemsWorkspace = workspace.getElementsByClassName("figure");
 const elemsRules = rules.getElementsByClassName("figure");
 
 /************************************************************/
@@ -25,20 +25,6 @@ btnRefresh.onclick = () => {
   refresh();
 };
 
-const btnCheck = document.createElement("button");
-btnCheck.classList.add("btn", "btn-fill");
-btnCheck.setAttribute("type", "button");
-btnCheck.textContent = "Проверить";
-btnCheck.onclick = () => {
-  check();
-};
-
-const inputTime = document.createElement("input");
-inputTime.classList.add("input");
-inputTime.setAttribute("type", "text");
-inputTime.setAttribute("placeholder", "Введите время (сек)");
-inputTime.setAttribute("size", "25");
-
 /************************************************************/
 
 /* @param stopwatch - секундомер времени игры */
@@ -49,22 +35,15 @@ let t; // для остановки секундомера
 
 let playerTime = 0;
 let playerPoints = 0;
-let level = 10;
+let level = 1;
 
 /* @param tempElem элемент из задания */
-/* @param txtAnimation отвечает за анимацию объекта задания */
 let tempElem = null;
-let txtAnimation = "";
 
 /* @param time время движения объекта */
 let time = 0;
-
 const size = [100, 50, 25];
-const sizeTxt = ["большой", "средний", "маленький"];
-
 const shape = [0, 50];
-const shapeTxt = ["квадрат", "круг"];
-
 const color = [
   "orange",
   "purple",
@@ -92,31 +71,28 @@ function startGame() {
   action();
   clone();
   timer();
-
+  addFunc();
   startBtn.remove();
-
   controls.append(btnRefresh);
-  controls.append(inputTime);
-  controls.append(btnCheck);
 }
 
 function refresh() {
   //очистка workspace
-  let amount = elemsWorlspace.length;
+  let amount = elemsWorkspace.length;
   for (let i = 0; i < amount; i++) {
-    workspace.removeChild(elemsWorlspace[0]);
+    workspace.removeChild(elemsWorkspace[0]);
   }
   rules.removeChild(elemsRules[0]);
   init();
   action();
+  addFunc();
   clone();
 }
 
 function check() {
-  playerTime = document.querySelector(".input").value * 1000;
   let result = false;
 
-  if (Math.abs(time - playerTime) <= 850) {
+  if (Math.abs(time - sec * 1000) <= 850) {
     playerPoints += level++ * 100;
     result = true;
 
@@ -206,6 +182,7 @@ function generateFigure(iterator) {
 
   figureContainer.classList.add("figure");
   figureContainer.id = iterator;
+  figureContainer.style.cursor = "pointer";
   figureContainer.style.position = "absolute";
   figureContainer.style.border = "2px solid black";
 
@@ -229,78 +206,60 @@ function generateFigure(iterator) {
 
 // анимация
 function action() {
-  for (let index = 0; index < elemsWorlspace.length; index++) {
-    const element = elemsWorlspace[index];
+  for (let index = 0; index < elemsWorkspace.length; index++) {
+    const element = elemsWorkspace[index];
 
     time = getRandomInt(1000, 1850);
-    let switcher = getRandomInt(1, 4);
-    let animation = null;
+    let switcher = getRandomInt(1, 5);
 
     switch (switcher) {
       case 1:
-        animation = appearancing;
-        txtAnimation = "появляется";
+        animation(element, 1, 1);
         break;
       case 2:
-        animation = shaking;
-        txtAnimation = "трясётся";
+        animation(element, 1, -1);
         break;
       case 3:
-        animation = scaling;
-        txtAnimation = "пульсирует";
+        animation(element, -1, 1);
         break;
-      default:
-        alert("alert");
+      case 4:
+        animation(element, -1, -1);
     }
 
-    animation(element);
+    function animation(element, multiply1, multiply2){
+      element.animate(
+        [
+          { background: color },
+          { opacity: 1 },
+          { transform: "scale(1.3)" },
+          { opacity: 0.3 },
+          { transform: "scale(0.5)" },
+          { transform: "scale(1)" },
+          { opacity: 1 },
+        ],
+        500
+    )};
   }
+}
 
-  function appearancing(elem) {
-    elem.animate([{ opacity: 0.01 }, { opacity: 1 }], time);
-  }
-  function shaking(elem) {
-    elemTop = parseInt(elem.style.top);
-    elemLeft = parseInt(elem.style.left);
-
-    elem.animate(
-      [
-        { left: elemLeft + "px" },
-        { left: elemLeft + 10 + "px" },
-        { left: elemLeft - 10 + "px" },
-        { left: elemLeft + 10 + "px" },
-        { left: elemLeft - 10 + "px" },
-        { left: elemLeft + 10 + "px" },
-        { left: elemLeft - 10 + "px" },
-        { left: elemLeft + "px" },
-      ],
-      time
-    );
-  }
-  function scaling(elem) {
-    elem.animate(
-      [
-        { transform: "scale(0.1)" },
-        { transform: "scale(0.4)" },
-        { transform: "scale(0.8)" },
-        { transform: "scale(0.4)" },
-        { transform: "scale(0.7)" },
-        { transform: "scale(0.2)" },
-        { transform: "scale(1)" },
-      ],
-      time
-    );
+function addFunc(){
+  for (let i = 0; i < elemsWorkspace.length; i++) {
+    const el = elemsWorkspace[i];
+    el.onclick = () => {
+      check();
+    };
   }
 }
 
 // вставка элемента в rules
 function clone() {
-  htmlAction.textContent = "Сколько времени " + txtAnimation;
-  tempElem = elemsWorlspace[elemsWorlspace.length - 1].cloneNode(true);
+  htmlAction.textContent = "Через " + (time - time%1000)/1000 + " сек. нажмите на ";
+  tempElem = elemsWorkspace[elemsWorkspace.length - 1].cloneNode(true);
   tempElem.style.position = "relative";
   tempElem.style.display = "inline-block";
   tempElem.style.top = "0px";
   tempElem.style.left = "0px";
+  tempElem.style.cursor = "not-allowed";
 
   rules.appendChild(tempElem);
 }
