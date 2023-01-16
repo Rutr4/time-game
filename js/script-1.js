@@ -61,7 +61,7 @@ let t; // для остановки секундомера
 
 let playerTime = 0;
 let playerPoints = 0;
-let level = 10;
+let level = 1;
 
 /* @param tempElem элемент из задания */
 /* @param txtAnimation отвечает за анимацию объекта задания */

@@ -25,18 +25,6 @@
                     <th>Время</th>
                     <th>Очки</th>
                 </tr>
-                <tr>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                </tr>
-                <tr>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                </tr>
             </table>
         </main>
         <!-- !FOOTER -->
@@ -47,21 +35,40 @@
     <script>
         // выход игрока в главное меню (сохранение его в рейтинговой таблице)
         const btnMenu = document.getElementById("main-menu");
+        btnMenu.style.cursor = "pointer";
         btnMenu.onclick = () => { window.location.href = '../index.html'; };
-
-        // заполнение рейтинговой таблицы
-        const ratingTable = document.getElementById("rating-table");
 
         players = JSON.parse(localStorage.getItem("rating"));
 
-        players.forEach(player => {
-            createRow(player);
-        });
+        while (players.length != 0) {
+            let bestPlayer = JSON.stringify({ score: -100000 });
+            let tempIndex = -100;
+
+            for (let i = 0; i < players.length; i++) {
+                if (JSON.parse(bestPlayer).score < players[i].score) {
+                    bestPlayer = JSON.stringify(players[i]);
+                    tempIndex = i;
+                }
+            }
+
+            createRow(players[tempIndex]);
+            players.splice(tempIndex, 1);
+        }
 
 
+
+        // заполнение рейтинговой таблицы
         function createRow(player) {
-            const row = document.createElement
-
+            const table = document.getElementById("rating-table");
+            let row = table.insertRow(-1);
+            let cell0 = row.insertCell(0);
+            let cell1 = row.insertCell(1);
+            let cell2 = row.insertCell(2);
+            let cell3 = row.insertCell(3);
+            cell0.innerHTML = player.name;
+            cell1.innerHTML = player.game;
+            cell2.innerHTML = player.time;
+            cell3.innerHTML = player.score;
         }
     </script>
 </body>
