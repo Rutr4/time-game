@@ -25,6 +25,7 @@
                     <th>Время</th>
                     <th>Очки</th>
                 </tr>
+                <!--? добавить кнопку ресета рейтинговой таблицы (localstorage)-->
             </table>
         </main>
         <!-- !FOOTER -->
@@ -53,8 +54,6 @@
             createRow(players[tempIndex]);
             players.splice(tempIndex, 1);
         }
-
-
 
         // заполнение рейтинговой таблицы
         function createRow(player) {

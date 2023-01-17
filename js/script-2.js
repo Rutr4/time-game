@@ -7,6 +7,7 @@ const htmlPoints = document.getElementById("points");
 const htmlAction = document.getElementById("action");
 const elemsWorkspace = workspace.getElementsByClassName("figure");
 const elemsRules = rules.getElementsByClassName("figure");
+const btnMenu = document.getElementById("main-menu");
 
 /************************************************************/
 
@@ -25,12 +26,27 @@ btnRefresh.onclick = () => {
   refresh();
 };
 
+// выход игрока в главное меню (сохранение его в рейтинговой таблице)
+btnMenu.onclick = () => {
+  player.score = playerPoints;
+  player.time = stopwatch;
+
+  rating.push(player);
+  localStorage.removeItem("player");
+  localStorage.setItem("rating", JSON.stringify(rating));
+
+  window.location.href = "../index.html";
+};
+
 /************************************************************/
 
 /* @param stopwatch - секундомер времени игры */
 let stopwatch = "00:00";
 let sec = 0;
 let min = 0;
+
+/* @param stopwatchForLevel - секундомер времени после запуска игры */
+let stopwatchForLevel = "0";
 let t; // для остановки секундомера
 
 let playerTime = 0;
@@ -71,28 +87,41 @@ function startGame() {
   action();
   clone();
   timer();
+  timerForLevel();
   addFunc();
   startBtn.remove();
   controls.append(btnRefresh);
 }
 
-function refresh() {
-  //очистка workspace
+//очистка workspace
+function clear() {
   let amount = elemsWorkspace.length;
   for (let i = 0; i < amount; i++) {
     workspace.removeChild(elemsWorkspace[0]);
   }
-  rules.removeChild(elemsRules[0]);
+  if (elemsRules.length != 0) rules.removeChild(elemsRules[0]);
+}
+
+function refresh() {
+  clearTimeout(t);
+  clear();
   init();
   action();
-  addFunc();
   clone();
+  timerForLevel();
+  addFunc();
+
+  stopwatchForLevel = 0;
 }
 
 function check() {
   let result = false;
 
-  if (Math.abs(time - sec * 1000) <= 850) {
+  //alert("Вы нажали за " + stopwatchForLevel/1000 + " сек.");
+  clear();
+  htmlAction.textContent="";
+
+  if (Math.abs(time - stopwatchForLevel) <= 500) {
     playerPoints += level++ * 100;
     result = true;
 
@@ -101,15 +130,12 @@ function check() {
       win();
     }
 
-    btnCheck.style.fontSize = "0.9em";
-    btnCheck.textContent = "Следующий уровень";
-    btnCheck.onclick = () => {
+    btnRefresh.style.fontSize = "0.9em";
+    btnRefresh.textContent = "Следующий уровень";
+    btnRefresh.onclick = () => {
       refresh();
-      btnCheck.textContent = "Проверить";
-      btnCheck.style.fontSize = "1em";
-      btnCheck.onclick = () => {
-        check();
-      };
+      btnRefresh.textContent = "Заново";
+      btnRefresh.style.fontSize = "1em";
     };
   } else {
     playerPoints -= level * 100;
@@ -119,7 +145,7 @@ function check() {
   }
 
   colorize(result);
-
+  stopwatchForLevel = "0";
   htmlPoints.textContent = "Очки: " + playerPoints;
   htmlLevel.textContent = "Уровень: " + level;
 }
@@ -155,16 +181,6 @@ function colorize(result) {
     ],
     500
   );
-  document
-    .querySelector(".input")
-    .animate(
-      [
-        { background: color },
-        { transform: "scale(0.1)" },
-        { transform: "scale(1.1)" },
-      ],
-      500
-    );
 }
 
 // добавление фигур на страницу
@@ -209,7 +225,8 @@ function action() {
   for (let index = 0; index < elemsWorkspace.length; index++) {
     const element = elemsWorkspace[index];
 
-    time = getRandomInt(1000, 1850);
+    time = level * 1000 + 4000;
+
     let switcher = getRandomInt(1, 5);
 
     switch (switcher) {
@@ -226,7 +243,7 @@ function action() {
         animation(element, -1, -1);
     }
 
-    function animation(element, multiply1, multiply2){
+    function animation(element, multiply1, multiply2) {
       element.animate(
         [
           { background: color },
@@ -238,11 +255,12 @@ function action() {
           { opacity: 1 },
         ],
         500
-    )};
+      );
+    }
   }
 }
 
-function addFunc(){
+function addFunc() {
   for (let i = 0; i < elemsWorkspace.length; i++) {
     const el = elemsWorkspace[i];
     el.onclick = () => {
@@ -253,7 +271,8 @@ function addFunc(){
 
 // вставка элемента в rules
 function clone() {
-  htmlAction.textContent = "Через " + (time - time%1000)/1000 + " сек. нажмите на ";
+  htmlAction.textContent =
+    "Через " + (time - (time % 1000)) / 1000 + " сек. нажмите на ";
   tempElem = elemsWorkspace[elemsWorkspace.length - 1].cloneNode(true);
   tempElem.style.position = "relative";
   tempElem.style.display = "inline-block";
@@ -285,6 +304,15 @@ function add() {
   timer();
 }
 function timer() {
-  t = setTimeout(add, 1000);
+  setTimeout(add, 1000);
   console.log(stopwatch);
+}
+
+function addmilliseconds(){
+  stopwatchForLevel = parseInt(stopwatchForLevel) + 500;
+  timerForLevel();
+}
+function timerForLevel() {
+  t = setTimeout(addmilliseconds, 500);
+  console.log(stopwatchForLevel);
 }
