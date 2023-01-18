@@ -185,7 +185,7 @@ function colorize(result) {
 
 // добавление фигур на страницу
 function init() {
-  for (let i = 0; i < Math.ceil(level / 2); i++) {
+  for (let i = 0; i < 1; i++) {
     workspace.appendChild(generateFigure(i));
   }
 }
