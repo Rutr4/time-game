@@ -16,6 +16,21 @@ rating = JSON.parse(localStorage.getItem("rating"));
 
 /************************************************************/
 
+const options1 = {
+  duration: 6300,
+  iterations: Infinity,
+  easing: "linear",
+  direction: "alternate",
+};
+const options2 = {
+  duration: 7000,
+  iterations: Infinity,
+  easing: "linear",
+  direction: "alternate",
+};
+
+/************************************************************/
+
 const startBtn = document.getElementById("start-game");
 
 const btnRefresh = document.createElement("button");
@@ -167,6 +182,8 @@ function colorize(result) {
   let color = "red";
   if (result === true) {
     color = "green";
+    options1.duration = options2.duration - 150;
+    options2.duration = options1.duration - 150;
   }
 
   htmlPoints.animate(
@@ -206,16 +223,6 @@ function generateFigure(iterator) {
     size[sizePicker] + "px";
   figureContainer.style.borderRadius = shape[shapePicker] + "%";
   figureContainer.style.background = color[colorPicker];
-  figureContainer.style.top =
-    getRandomInt(
-      0,
-      workspace.getBoundingClientRect().height - size[sizePicker]
-    ) + "px";
-  figureContainer.style.left =
-    getRandomInt(
-      0,
-      workspace.getBoundingClientRect().width - size[sizePicker]
-    ) + "px";
 
   return figureContainer;
 }
@@ -223,26 +230,37 @@ function generateFigure(iterator) {
 // анимация
 function action() {
   for (let index = 0; index < elemsWorkspace.length; index++) {
-    const element = elemsWorkspace[index];
     let h = workspace.getBoundingClientRect().height;
     let w = workspace.getBoundingClientRect().width;
 
-    console.log(w - 25 + "px");
-    console.log(workspace.getBoundingClientRect());
-    const animation1 = [{ top: 0 + "px" }, { top: h - 50 + "px" }];
-    const animation2 = [{ left: 0 + "px" }, { left: w - 50 + "px" }];
-    const options1 = {
-      duration: 5500,
-      iterations: Infinity,
-      easing: "linear",
-      direction: "alternate"
-    };
-    const options2 = {
-      duration: 6500,
-      iterations: Infinity,
-      easing: "linear",
-      direction: "alternate"
-    };
+    let switcher = getRandomInt(1, 5);
+
+    let animation1 = [];
+    let animation2 = [];
+
+    switch (switcher) {
+      case 1:
+        animation1 = [{ top: 0 + "px" }, { top: h - 50 + "px" }];
+        animation2 = [{ left: 0 + "px" }, { left: w - 50 + "px" }];
+        break;
+      case 2:
+        animation1 = [{ top: 0 + "px" }, { top: h - 50 + "px" }];
+        animation2 = [{ left: w - 50 + "px" }, { left: 0 + "px" }];
+        break;
+      case 3:
+        animation1 = [{ top: h - 50 + "px" }, { top: 0 + "px" }];
+        animation2 = [{ left: 0 + "px" }, { left: w - 50 + "px" }];
+        break;
+      case 4:
+        animation1 = [{ top: h - 50 + "px" }, { top: 0 + "px" }];
+        animation2 = [{ left: w - 50 + "px" }, { left: 0 + "px" }];
+        break;
+      default:
+        alert("alert");
+        break;
+    }
+
+    const element = elemsWorkspace[index];
 
     element.animate(animation1, options1);
     element.animate(animation2, options2);
