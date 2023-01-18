@@ -58,7 +58,7 @@ let tempElem = null;
 
 /* @param time время движения объекта */
 let time = 0;
-const size = [100, 50, 25];
+const size = [50];
 const shape = [0, 50];
 const color = [
   "orange",
@@ -84,10 +84,10 @@ htmlLevel.textContent = "Уровень: " + level;
 // кнопки, инпуты, взаимодействия
 function startGame() {
   init();
-  action();
   clone();
   timer();
   timerForLevel();
+  action();
   addFunc();
   startBtn.remove();
   controls.append(btnRefresh);
@@ -106,10 +106,10 @@ function refresh() {
   clearTimeout(t);
   clear();
   init();
-  action();
   clone();
   timerForLevel();
   addFunc();
+  action();
 
   stopwatchForLevel = 0;
 }
@@ -119,7 +119,7 @@ function check() {
 
   //alert("Вы нажали за " + stopwatchForLevel/1000 + " сек.");
   clear();
-  htmlAction.textContent="";
+  htmlAction.textContent = "";
 
   if (Math.abs(time - stopwatchForLevel) <= 500) {
     playerPoints += level++ * 100;
@@ -185,7 +185,7 @@ function colorize(result) {
 
 // добавление фигур на страницу
 function init() {
-  for (let i = 0; i < level; i++) {
+  for (let i = 0; i < Math.ceil(level / 2); i++) {
     workspace.appendChild(generateFigure(i));
   }
 }
@@ -224,39 +224,28 @@ function generateFigure(iterator) {
 function action() {
   for (let index = 0; index < elemsWorkspace.length; index++) {
     const element = elemsWorkspace[index];
+    let h = workspace.getBoundingClientRect().height;
+    let w = workspace.getBoundingClientRect().width;
 
-    time = level * 1000 + 4000;
+    console.log(w - 25 + "px");
+    console.log(workspace.getBoundingClientRect());
+    const animation1 = [{ top: 0 + "px" }, { top: h - 50 + "px" }];
+    const animation2 = [{ left: 0 + "px" }, { left: w - 50 + "px" }];
+    const options1 = {
+      duration: 5500,
+      iterations: Infinity,
+      easing: "linear",
+      direction: "alternate"
+    };
+    const options2 = {
+      duration: 6500,
+      iterations: Infinity,
+      easing: "linear",
+      direction: "alternate"
+    };
 
-    let switcher = getRandomInt(1, 5);
-
-    switch (switcher) {
-      case 1:
-        animation(element, 1, 1);
-        break;
-      case 2:
-        animation(element, 1, -1);
-        break;
-      case 3:
-        animation(element, -1, 1);
-        break;
-      case 4:
-        animation(element, -1, -1);
-    }
-
-    function animation(element, multiply1, multiply2) {
-      element.animate(
-        [
-          { background: color },
-          { opacity: 1 },
-          { transform: "scale(1.3)" },
-          { opacity: 0.3 },
-          { transform: "scale(0.5)" },
-          { transform: "scale(1)" },
-          { opacity: 1 },
-        ],
-        500
-      );
-    }
+    element.animate(animation1, options1);
+    element.animate(animation2, options2);
   }
 }
 
@@ -271,6 +260,7 @@ function addFunc() {
 
 // вставка элемента в rules
 function clone() {
+  time = level * 1000 + 4000;
   htmlAction.textContent =
     "Через " + (time - (time % 1000)) / 1000 + " сек. нажмите на ";
   tempElem = elemsWorkspace[elemsWorkspace.length - 1].cloneNode(true);
@@ -308,7 +298,7 @@ function timer() {
   console.log(stopwatch);
 }
 
-function addmilliseconds(){
+function addmilliseconds() {
   stopwatchForLevel = parseInt(stopwatchForLevel) + 500;
   timerForLevel();
 }

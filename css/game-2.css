@@ -1,12 +1,12 @@
-.controls{
+.controls {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
 }
-.btn-header{
+.btn-header {
   border: 1px solid black;
   cursor: pointer;
 }
-#action{
+#action {
   display: inline-block;
 }
