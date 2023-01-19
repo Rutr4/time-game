@@ -5,8 +5,8 @@ const htmlName = document.getElementById("name");
 const htmlLevel = document.getElementById("level");
 const htmlPoints = document.getElementById("points");
 const htmlAction = document.getElementById("action");
-const elemsWorlspace = workspace.getElementsByClassName("figure");
-const elemsRules = rules.getElementsByClassName("figure");
+const elemsWorkspace = workspace.getElementsByClassName("imgContainer");
+const btnMenu = document.getElementById("main-menu");
 
 /************************************************************/
 
@@ -15,6 +15,22 @@ rating = JSON.parse(localStorage.getItem("rating"));
 
 /************************************************************/
 
+const startImg = {
+  top: workspace.getBoundingClientRect().height / 2 - 28,
+  left: 0,
+  imgSrc: "../img/runner.png",
+  alt: "Человечек, который хочет домой",
+  class: "start",
+};
+const finishImg = {
+  top: workspace.getBoundingClientRect().height / 2 - 88,
+  left: workspace.getBoundingClientRect().width - 195,
+  imgSrc: "../img/home.png",
+  alt: "Дом человечка",
+  class: "finish",
+};
+
+/************************************************************/
 const startBtn = document.getElementById("start-game");
 
 const btnRefresh = document.createElement("button");
@@ -25,19 +41,17 @@ btnRefresh.onclick = () => {
   refresh();
 };
 
-const btnCheck = document.createElement("button");
-btnCheck.classList.add("btn", "btn-fill");
-btnCheck.setAttribute("type", "button");
-btnCheck.textContent = "Проверить";
-btnCheck.onclick = () => {
-  check();
-};
+// выход игрока в главное меню (сохранение его в рейтинговой таблице)
+btnMenu.onclick = () => {
+  player.score = playerPoints;
+  player.time = stopwatch;
 
-const inputTime = document.createElement("input");
-inputTime.classList.add("input");
-inputTime.setAttribute("type", "text");
-inputTime.setAttribute("placeholder", "Введите время (сек)");
-inputTime.setAttribute("size", "25");
+  rating.push(player);
+  localStorage.removeItem("player");
+  localStorage.setItem("rating", JSON.stringify(rating));
+
+  window.location.href = "../index.html";
+};
 
 /************************************************************/
 
@@ -45,38 +59,20 @@ inputTime.setAttribute("size", "25");
 let stopwatch = "00:00";
 let sec = 0;
 let min = 0;
+
+/* @param stopwatchForLevel - секундомер времени после запуска игры */
+let stopwatchForLevel = "0";
 let t; // для остановки секундомера
 
 let playerTime = 0;
 let playerPoints = 0;
-let level = 10;
+let level = 1;
 
 /* @param tempElem элемент из задания */
-/* @param txtAnimation отвечает за анимацию объекта задания */
 let tempElem = null;
-let txtAnimation = "";
 
 /* @param time время движения объекта */
 let time = 0;
-
-const size = [100, 50, 25];
-const sizeTxt = ["большой", "средний", "маленький"];
-
-const shape = [0, 50];
-const shapeTxt = ["квадрат", "круг"];
-
-const color = [
-  "orange",
-  "purple",
-  "red",
-  "pink",
-  "yellow",
-  "blue",
-  "green",
-  "lime",
-  "olive",
-  "black",
-];
 
 /************************************************************/
 
@@ -85,38 +81,126 @@ htmlPoints.textContent = "Очки: " + playerPoints;
 htmlLevel.textContent = "Уровень: " + level;
 
 /************************************************************/
+// добавление фигур на страницу
+function init() {
+  workspace.appendChild(generateImg(startImg));
+  workspace.appendChild(generateImg(finishImg));
+}
+
+function generateImg(imageInfo) {
+  const imgContainer = document.createElement("div");
+  imgContainer.classList.add("imgContainer");
+  imgContainer.classList.add(imageInfo.class);
+  imgContainer.style.top = imageInfo.top + "px";
+  imgContainer.style.left = imageInfo.left + "px";
+
+  const img = document.createElement("img");
+  img.src = imageInfo.imgSrc;
+  img.alt = imageInfo.alt;
+  imgContainer.appendChild(img);
+  img.ondragstart = () => false;
+
+  if (imageInfo.class === "start") {
+    imgContainer.addEventListener("pointerdown", (e) => {
+      handleImgPartCaptured(e, workspace);
+    });
+  }
+
+  return imgContainer;
+}
+
+const handleImgPartCaptured = (e, workspace = document.body) => {
+  const element = e.currentTarget;
+  if (element === null) return;
+  element.classList.add("runner_state_captured");
+
+  let clickLeftOffset,
+    clickTopOffset = 0;
+  const workspaceHeight = workspace.getBoundingClientRect().height;
+  const workspaceWidth = workspace.getBoundingClientRect().width;
+
+  // координаты клика относительно верхнего левого края элемента
+  clickLeftOffset = e.clientX - element.getBoundingClientRect().left;
+  clickTopOffset = e.clientY - element.getBoundingClientRect().top;
+
+  document.onpointermove = elementDrag;
+  document.onpointerup = handleElementReleased;
+
+  function elementDrag(e) {
+    if (element === null) return;
+
+    // получение координат курсора относительно рабочей области
+    const cursorX = e.clientX - workspace.getBoundingClientRect().left;
+    const cursorY = e.clientY - workspace.getBoundingClientRect().top;
+
+    // ограничение перетаскивания элемента рабочей областью
+    const offsetFromEdge = 1; //px
+    const minLeft = offsetFromEdge;
+    const maxLeft =
+      workspaceWidth - element.getBoundingClientRect().width - offsetFromEdge;
+    const minTop = offsetFromEdge;
+    const maxTop =
+      workspaceHeight - element.getBoundingClientRect().height - offsetFromEdge;
+
+    // отслеживаем сдвиг элемента
+    let topShift = cursorY - clickTopOffset;
+    let leftShift = cursorX - clickLeftOffset;
+
+    if (topShift > maxTop) topShift = maxTop;
+    else if (topShift < minTop) topShift = minTop;
+
+    if (leftShift > maxLeft) leftShift = maxLeft;
+    else if (leftShift < minLeft) leftShift = minLeft;
+
+    //element.style.top = (topShift / workspaceHeight) * 100 + "%";
+    element.style.top = topShift + "px";
+    //element.style.left = (leftShift / workspaceWidth) * 100 + "%";
+    element.style.left = leftShift + "px";
+  }
+
+  function handleElementReleased() {
+    document.onpointermove = null;
+    element.classList.remove("runner_state_captured");
+  }
+};
+
+
+
+
 
 // кнопки, инпуты, взаимодействия
 function startGame() {
   init();
-  action();
-  clone();
+  rulesAdd();
   timer();
-
+  timerForLevel();
   startBtn.remove();
-
   controls.append(btnRefresh);
-  controls.append(inputTime);
-  controls.append(btnCheck);
+}
+
+//очистка workspace
+function clear() {
+  let amount = elemsWorkspace.length;
+  for (let i = 0; i < amount; i++) {}
 }
 
 function refresh() {
-  //очистка workspace
-  let amount = elemsWorlspace.length;
-  for (let i = 0; i < amount; i++) {
-    workspace.removeChild(elemsWorlspace[0]);
-  }
-  rules.removeChild(elemsRules[0]);
+  clearTimeout(t);
+  clear();
   init();
-  action();
-  clone();
+  rulesAdd();
+  timerForLevel();
+
+  stopwatchForLevel = 0;
 }
 
 function check() {
-  playerTime = document.querySelector(".input").value * 1000;
   let result = false;
 
-  if (Math.abs(time - playerTime) <= 850) {
+  //alert("Вы провели человечка за " + stopwatchForLevel/1000 + " сек.");
+  clear();
+
+  if (Math.abs(time - stopwatchForLevel) <= 500) {
     playerPoints += level++ * 100;
     result = true;
 
@@ -125,15 +209,12 @@ function check() {
       win();
     }
 
-    btnCheck.style.fontSize = "0.9em";
-    btnCheck.textContent = "Следующий уровень";
-    btnCheck.onclick = () => {
+    btnRefresh.style.fontSize = "0.9em";
+    btnRefresh.textContent = "Следующий уровень";
+    btnRefresh.onclick = () => {
       refresh();
-      btnCheck.textContent = "Проверить";
-      btnCheck.style.fontSize = "1em";
-      btnCheck.onclick = () => {
-        check();
-      };
+      btnRefresh.textContent = "Заново";
+      btnRefresh.style.fontSize = "1em";
     };
   } else {
     playerPoints -= level * 100;
@@ -143,7 +224,7 @@ function check() {
   }
 
   colorize(result);
-
+  stopwatchForLevel = "0";
   htmlPoints.textContent = "Очки: " + playerPoints;
   htmlLevel.textContent = "Уровень: " + level;
 }
@@ -165,6 +246,8 @@ function colorize(result) {
   let color = "red";
   if (result === true) {
     color = "green";
+    options1.duration = options2.duration - 150;
+    options2.duration = options1.duration - 150;
   }
 
   htmlPoints.animate(
@@ -179,130 +262,13 @@ function colorize(result) {
     ],
     500
   );
-  document
-    .querySelector(".input")
-    .animate(
-      [
-        { background: color },
-        { transform: "scale(0.1)" },
-        { transform: "scale(1.1)" },
-      ],
-      500
-    );
 }
 
-// добавление фигур на страницу
-function init() {
-  for (let i = 0; i < level; i++) {
-    workspace.appendChild(generateFigure(i));
-  }
-}
-function generateFigure(iterator) {
-  const figureContainer = document.createElement("div");
-
-  let sizePicker = getRandomInt(0, size.length);
-  let shapePicker = getRandomInt(0, shape.length);
-  let colorPicker = getRandomInt(0, color.length);
-
-  figureContainer.classList.add("figure");
-  figureContainer.id = iterator;
-  figureContainer.style.position = "absolute";
-  figureContainer.style.border = "2px solid black";
-
-  figureContainer.style.width = figureContainer.style.height =
-    size[sizePicker] + "px";
-  figureContainer.style.borderRadius = shape[shapePicker] + "%";
-  figureContainer.style.background = color[colorPicker];
-  figureContainer.style.top =
-    getRandomInt(
-      0,
-      workspace.getBoundingClientRect().height - size[sizePicker]
-    ) + "px";
-  figureContainer.style.left =
-    getRandomInt(
-      0,
-      workspace.getBoundingClientRect().width - size[sizePicker]
-    ) + "px";
-
-  return figureContainer;
-}
-
-// анимация
-function action() {
-  for (let index = 0; index < elemsWorlspace.length; index++) {
-    const element = elemsWorlspace[index];
-
-    time = getRandomInt(1000, 1850);
-    let switcher = getRandomInt(1, 4);
-    let animation = null;
-
-    switch (switcher) {
-      case 1:
-        animation = appearancing;
-        txtAnimation = "появляется";
-        break;
-      case 2:
-        animation = shaking;
-        txtAnimation = "трясётся";
-        break;
-      case 3:
-        animation = scaling;
-        txtAnimation = "пульсирует";
-        break;
-      default:
-        alert("alert");
-    }
-
-    animation(element);
-  }
-
-  function appearancing(elem) {
-    elem.animate([{ opacity: 0.01 }, { opacity: 1 }], time);
-  }
-  function shaking(elem) {
-    elemTop = parseInt(elem.style.top);
-    elemLeft = parseInt(elem.style.left);
-
-    elem.animate(
-      [
-        { left: elemLeft + "px" },
-        { left: elemLeft + 10 + "px" },
-        { left: elemLeft - 10 + "px" },
-        { left: elemLeft + 10 + "px" },
-        { left: elemLeft - 10 + "px" },
-        { left: elemLeft + 10 + "px" },
-        { left: elemLeft - 10 + "px" },
-        { left: elemLeft + "px" },
-      ],
-      time
-    );
-  }
-  function scaling(elem) {
-    elem.animate(
-      [
-        { transform: "scale(0.1)" },
-        { transform: "scale(0.4)" },
-        { transform: "scale(0.8)" },
-        { transform: "scale(0.4)" },
-        { transform: "scale(0.7)" },
-        { transform: "scale(0.2)" },
-        { transform: "scale(1)" },
-      ],
-      time
-    );
-  }
-}
-
-// вставка элемента в rules
-function clone() {
-  htmlAction.textContent = "Сколько времени " + txtAnimation;
-  tempElem = elemsWorlspace[elemsWorlspace.length - 1].cloneNode(true);
-  tempElem.style.position = "relative";
-  tempElem.style.display = "inline-block";
-  tempElem.style.top = "0px";
-  tempElem.style.left = "0px";
-
-  rules.appendChild(tempElem);
+// Изменения текста в правилах
+function rulesAdd() {
+  time = level * 1000 + 4000;
+  htmlAction.textContent =
+    "Проводите человечка до дома за " + (time - (time % 1000)) / 1000 + " сек.";
 }
 
 // получить случайное число в диапазоне: [min; max)
@@ -326,6 +292,15 @@ function add() {
   timer();
 }
 function timer() {
-  t = setTimeout(add, 1000);
-  console.log(stopwatch);
+  setTimeout(add, 1000);
+  //console.log(stopwatch);
+}
+
+function addmilliseconds() {
+  stopwatchForLevel = parseInt(stopwatchForLevel) + 500;
+  timerForLevel();
+}
+function timerForLevel() {
+  t = setTimeout(addmilliseconds, 500);
+  //console.log(stopwatchForLevel);
 }
