@@ -239,7 +239,7 @@ function action() {
   for (let index = 0; index < elemsWorkspace.length; index++) {
     const element = elemsWorkspace[index];
 
-    time = getRandomInt(1000, 1850);
+    time = getRandomInt(1000, 8850);
     let switcher = getRandomInt(1, 4);
     let animation = null;
 

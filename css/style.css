@@ -39,18 +39,19 @@ body {
   flex-direction: column;
 }
 
-header, footer  {
+header,
+footer {
   height: 1.5em;
   background-color: peru;
   display: flex;
   flex-direction: row;
   align-items: center;
 }
-header{
+header {
   border-bottom: 1px dashed black;
   justify-content: space-evenly;
 }
-footer{
+footer {
   border-top: 1px dashed black;
   justify-content: center;
 }
@@ -63,7 +64,7 @@ main {
   justify-content: center;
 }
 
-.workspace{
+.workspace {
   width: 100%;
   flex: 1 1 auto;
   min-width: 50vw;
@@ -72,21 +73,21 @@ main {
   border: 1px dashed black;
 }
 
-h1{
+h1 {
   margin: 25px;
   font-size: 1.5em;
   font-weight: 800;
   letter-spacing: 0.4em;
   text-transform: uppercase;
-  text-shadow: 0 0 10px #9C4A1A;
+  text-shadow: 0 0 10px #9c4a1a;
 }
-h2{
+h2 {
   margin: 10px;
   font-size: 1.2em;
   font-weight: 800;
   letter-spacing: 0.4em;
   text-transform: uppercase;
-  text-shadow: 0 0 10px #9C4A1A;
+  text-shadow: 0 0 10px #9c4a1a;
 }
 
 /* - - - - - - - - - - - */
@@ -99,7 +100,7 @@ h2{
   align-items: center;
 }
 
-.menu input{
+.menu input {
   margin: 8px;
 }
 
@@ -121,13 +122,13 @@ h2{
   padding: 15px 50px 15px;
   outline: 0;
   position: relative;
-  
+
   cursor: pointer;
 }
 
 .btn-fill::after {
   content: "";
-  background-color: #F7C815;
+  background-color: #f7c815;
   width: 100%;
   z-index: -1;
   position: absolute;
@@ -142,7 +143,7 @@ h2{
   left: 0px;
 }
 
-#main-menu{
+#main-menu {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -161,4 +162,16 @@ h2{
 }
 #main-menu:hover {
   transform: perspective(1px) scale3d(1.044, 1.044, 1) translateZ(0) !important;
+}
+.controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.btn-header {
+  border: 1px solid black;
+  cursor: pointer;
+}
+#action {
+  display: inline-block;
 }

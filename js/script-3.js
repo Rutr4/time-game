@@ -30,20 +30,19 @@ const finishImg = {
   class: "finish",
 };
 
+let canvas = document.getElementById("canvas");
+let canvasRect = canvas.getBoundingClientRect();
+
+let ctx = canvas.getContext("2d");
+
 let path = {
   keyPoints: [],
   x: 0,
   y: 0,
   maxPoints: 7,
   //? this.maxPoints
-  dotsInterval: (workspace.getBoundingClientRect().width - 28) / 7,
+  dotsInterval: (canvas.getBoundingClientRect().width - 28) / 7,
 };
-
-let canvas = document.getElementById("canvas");
-let canvasRect = canvas.getBoundingClientRect();
-
-let ctx = canvas.getContext("2d");
-
 /************************************************************/
 
 for (let i = 0; i < path.maxPoints; i++) {
@@ -69,11 +68,8 @@ function drawPath() {
   }
 
   //!Центр finishStart
-  ctx.lineTo(
-    canvasRect.right + 100,
-    canvasRect.height / 2
-  );
-
+  ctx.lineTo(canvasRect.width - 50, canvasRect.height / 2);
+  //ctx.closePath();
   ctx.stroke();
 }
 
@@ -219,12 +215,15 @@ function startGame() {
   timerForLevel();
   startBtn.remove();
   controls.append(btnRefresh);
+  console.log(elemsWorkspace);
 }
 
 //очистка workspace
 function clear() {
-  let amount = elemsWorkspace.length;
-  for (let i = 0; i < amount; i++) {}
+  const amount = elemsWorkspace.length;
+  for (let i = 0; i < amount; i++) {
+    workspace.removeChild(elemsWorkspace[0]);
+  }
 }
 
 function refresh() {
@@ -347,3 +346,6 @@ function timerForLevel() {
   t = setTimeout(addmilliseconds, 500);
   //console.log(stopwatchForLevel);
 }
+
+console.log(workspace.getBoundingClientRect().width);
+console.log(workspace.getBoundingClientRect().height);
