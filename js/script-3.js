@@ -35,41 +35,81 @@ let canvasRect = canvas.getBoundingClientRect();
 
 let ctx = canvas.getContext("2d");
 
+let mouseX;
+let mouseY;
+
 let path = {
   keyPoints: [],
+
   x: 0,
   y: 0,
-  maxPoints: 7,
-  //? this.maxPoints
-  dotsInterval: (canvas.getBoundingClientRect().width - 28) / 7,
+
+  currentPoints: 0,
+
+  maxPoints: 6,
+  xInterval: (canvas.getBoundingClientRect().width - 28) / 6,
 };
 /************************************************************/
 
 for (let i = 0; i < path.maxPoints; i++) {
-  path.x += path.dotsInterval;
-  path.y = getRandomInt(0, canvasRect.height);
+  if (i === 0) {
+    path.x += 28;
+    path.y = canvasRect.height / 2;
+  } else if (i === path.maxPoints - 1) {
+    path.x = canvasRect.width - 90;
+    path.y = canvasRect.height / 2;
+  } else {
+    path.x += path.xInterval;
+    path.y = getRandomInt(0, canvasRect.height);
+  }
   path.keyPoints.push([path.x, path.y]);
 }
 
-console.log(path.keyPoints);
-
 drawPath();
+canvas.onmousedown = () => {
+  let draw = setInterval(drawPath, 100);
+
+  canvas.onmousemove = (event) => {
+    mouseX = event.offsetX;
+    mouseY = event.offsetY;
+    console.log(
+      distancePointToLine(
+        mouseX,
+        mouseY,
+        path.keyPoints[path.currentPoints][0],
+        path.keyPoints[path.currentPoints][1],
+        path.keyPoints[path.currentPoints + 1][0],
+        path.keyPoints[path.currentPoints + 1][1]
+      )
+    );
+  };
+  canvas.onmouseup = () => {
+    clearInterval(draw);
+  };
+};
+
 function drawPath() {
   ctx.beginPath();
-
   ctx.strokeStyle = "green";
   ctx.lineWidth = "10";
   ctx.lineCap = "round";
-  //!Центр imgStart
-  ctx.moveTo(28, canvasRect.height / 2);
 
-  for (let i = 0; i < path.maxPoints - 1; i++) {
+  ctx.moveTo(path.keyPoints[0][0], path.keyPoints[0][1]);
+  for (let i = 1; i < path.maxPoints; i++) {
     ctx.lineTo(path.keyPoints[i][0], path.keyPoints[i][1]);
   }
+  ctx.stroke();
 
-  //!Центр finishStart
-  ctx.lineTo(canvasRect.width - 50, canvasRect.height / 2);
-  //ctx.closePath();
+  //от первой точки до курсора
+  ctx.strokeStyle = "red";
+  ctx.beginPath();
+  ctx.moveTo(path.keyPoints[0][0], path.keyPoints[0][1]);
+  ctx.lineTo(mouseX, mouseY);
+  ctx.stroke();
+
+  //от второй точки до курсора
+  ctx.moveTo(path.keyPoints[1][0], path.keyPoints[1][1]);
+  ctx.lineTo(mouseX, mouseY);
   ctx.stroke();
 }
 
@@ -347,5 +387,38 @@ function timerForLevel() {
   //console.log(stopwatchForLevel);
 }
 
-console.log(workspace.getBoundingClientRect().width);
-console.log(workspace.getBoundingClientRect().height);
+/*
+расчёт расстояния от точки до отрезка 
+x_y - точка
+x1_y1_x2_y2 - точки А_Б отрезка
+*/
+function distancePointToLine(x, y, x1, y1, x2, y2) {
+  A = x - x1;
+  B = y - y1;
+  C = x2 - x1;
+  D = y2 - y1;
+
+  dot = A * C + B * D;
+  len_sq = C * C + D * D;
+  param = -1;
+  if (len_sq != 0) {
+    param = dot / len_sq;
+  }
+  xx = yy = 0;
+
+  if (param < 0) {
+    xx = x1;
+    yy = y1;
+  } else if (param > 1) {
+    xx = x2;
+    yy = y2;
+  } else {
+    xx = x1 + param * C;
+    yy = y1 + param * D;
+  }
+
+  dx = x - xx;
+  dy = y - yy;
+
+  return {d: Math.sqrt(dx * dx + dy * dy) };
+}
