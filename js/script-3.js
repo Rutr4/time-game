@@ -30,6 +30,53 @@ const finishImg = {
   class: "finish",
 };
 
+let path = {
+  keyPoints: [],
+  x: 0,
+  y: 0,
+  maxPoints: 7,
+  //? this.maxPoints
+  dotsInterval: (workspace.getBoundingClientRect().width - 28) / 7,
+};
+
+let canvas = document.getElementById("canvas");
+let canvasRect = canvas.getBoundingClientRect();
+
+let ctx = canvas.getContext("2d");
+
+/************************************************************/
+
+for (let i = 0; i < path.maxPoints; i++) {
+  path.x += path.dotsInterval;
+  path.y = getRandomInt(0, canvasRect.height);
+  path.keyPoints.push([path.x, path.y]);
+}
+
+console.log(path.keyPoints);
+
+drawPath();
+function drawPath() {
+  ctx.beginPath();
+
+  ctx.strokeStyle = "green";
+  ctx.lineWidth = "10";
+  ctx.lineCap = "round";
+  //!Центр imgStart
+  ctx.moveTo(28, canvasRect.height / 2);
+
+  for (let i = 0; i < path.maxPoints - 1; i++) {
+    ctx.lineTo(path.keyPoints[i][0], path.keyPoints[i][1]);
+  }
+
+  //!Центр finishStart
+  ctx.lineTo(
+    canvasRect.right + 100,
+    canvasRect.height / 2
+  );
+
+  ctx.stroke();
+}
+
 /************************************************************/
 const startBtn = document.getElementById("start-game");
 
@@ -163,10 +210,6 @@ const handleImgPartCaptured = (e, workspace = document.body) => {
     element.classList.remove("runner_state_captured");
   }
 };
-
-
-
-
 
 // кнопки, инпуты, взаимодействия
 function startGame() {
