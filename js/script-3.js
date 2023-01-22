@@ -126,7 +126,7 @@ let t; // для остановки секундомера
 
 let playerTime = 0;
 let playerPoints = 0;
-let level = 9;
+let level = 1;
 
 /* @param tempElem элемент из задания */
 let tempElem = null;
