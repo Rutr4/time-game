@@ -21,6 +21,8 @@ const startImg = {
   imgSrc: "../img/runner.png",
   alt: "Человечек, который хочет домой",
   class: "start",
+  xCenter: null,
+  yCenter: null,
 };
 const finishImg = {
   top: workspace.getBoundingClientRect().height / 2 - 88,
@@ -35,9 +37,6 @@ let canvasRect = canvas.getBoundingClientRect();
 
 let ctx = canvas.getContext("2d");
 
-let mouseX;
-let mouseY;
-
 let path = {
   keyPoints: [],
 
@@ -49,46 +48,35 @@ let path = {
   maxPoints: 6,
   xInterval: (canvas.getBoundingClientRect().width - 28) / 6,
 };
+
 /************************************************************/
 
-for (let i = 0; i < path.maxPoints; i++) {
-  if (i === 0) {
-    path.x += 28;
-    path.y = canvasRect.height / 2;
-  } else if (i === path.maxPoints - 1) {
-    path.x = canvasRect.width - 90;
-    path.y = canvasRect.height / 2;
-  } else {
-    path.x += path.xInterval;
-    path.y = getRandomInt(0, canvasRect.height);
+// Canvas отрисовка
+function createKeyPoints() {
+  path.keyPoints = [];
+  path.x = 0;
+  path.y = 0;
+
+  for (let i = 0; i < path.maxPoints; i++) {
+    if (i === 0) {
+      path.x += 28;
+      path.y = canvasRect.height / 2;
+    } else if (i === path.maxPoints - 1) {
+      path.x = canvasRect.width - 90;
+      path.y = canvasRect.height / 2;
+    } else {
+      path.x += path.xInterval;
+      path.y = getRandomInt(0, canvasRect.height);
+    }
+    path.keyPoints.push([path.x, path.y]);
   }
-  path.keyPoints.push([path.x, path.y]);
 }
 
-drawPath();
-canvas.onmousedown = () => {
-  let draw = setInterval(drawPath, 100);
-
-  canvas.onmousemove = (event) => {
-    mouseX = event.offsetX;
-    mouseY = event.offsetY;
-    console.log(
-      distancePointToLine(
-        mouseX,
-        mouseY,
-        path.keyPoints[path.currentPoints][0],
-        path.keyPoints[path.currentPoints][1],
-        path.keyPoints[path.currentPoints + 1][0],
-        path.keyPoints[path.currentPoints + 1][1]
-      )
-    );
-  };
-  canvas.onmouseup = () => {
-    clearInterval(draw);
-  };
-};
-
 function drawPath() {
+  createKeyPoints();
+
+  ctx.clearRect(0, 0, 1014, 696);
+
   ctx.beginPath();
   ctx.strokeStyle = "green";
   ctx.lineWidth = "10";
@@ -99,21 +87,10 @@ function drawPath() {
     ctx.lineTo(path.keyPoints[i][0], path.keyPoints[i][1]);
   }
   ctx.stroke();
-
-  //от первой точки до курсора
-  ctx.strokeStyle = "red";
-  ctx.beginPath();
-  ctx.moveTo(path.keyPoints[0][0], path.keyPoints[0][1]);
-  ctx.lineTo(mouseX, mouseY);
-  ctx.stroke();
-
-  //от второй точки до курсора
-  ctx.moveTo(path.keyPoints[1][0], path.keyPoints[1][1]);
-  ctx.lineTo(mouseX, mouseY);
-  ctx.stroke();
 }
 
 /************************************************************/
+
 const startBtn = document.getElementById("start-game");
 
 const btnRefresh = document.createElement("button");
@@ -149,7 +126,7 @@ let t; // для остановки секундомера
 
 let playerTime = 0;
 let playerPoints = 0;
-let level = 1;
+let level = 9;
 
 /* @param tempElem элемент из задания */
 let tempElem = null;
@@ -166,8 +143,8 @@ htmlLevel.textContent = "Уровень: " + level;
 /************************************************************/
 // добавление фигур на страницу
 function init() {
-  workspace.appendChild(generateImg(startImg));
   workspace.appendChild(generateImg(finishImg));
+  workspace.appendChild(generateImg(startImg));
 }
 
 function generateImg(imageInfo) {
@@ -186,16 +163,76 @@ function generateImg(imageInfo) {
   if (imageInfo.class === "start") {
     imgContainer.addEventListener("pointerdown", (e) => {
       handleImgPartCaptured(e, workspace);
+      //! дополнительно
+      checkInterval = setInterval(checkHandledCenterImg, 100);
+    });
+  } else {
+    imgContainer.addEventListener("pointerEnter", () => {
+      console.log("over!!!!!!!!!!");
     });
   }
 
   return imgContainer;
 }
 
+let checkInterval;
+//ПРОВЕРКА РАССТОЯНИЯ
+function checkHandledCenterImg() {
+  ctx.strokeStyle = "transparent";
+
+  ctx.beginPath();
+  ctx.moveTo(
+    path.keyPoints[path.currentPoints][0],
+    path.keyPoints[path.currentPoints][1]
+  );
+  ctx.lineTo(startImg.xCenter, startImg.yCenter);
+  ctx.stroke();
+
+  //от второй точки до курсора
+  ctx.moveTo(
+    path.keyPoints[path.currentPoints + 1][0],
+    path.keyPoints[path.currentPoints + 1][1]
+  );
+  ctx.lineTo(startImg.xCenter, startImg.yCenter);
+  ctx.stroke();
+
+  let distance = distancePointToLine(
+    startImg.xCenter,
+    startImg.yCenter,
+    path.keyPoints[path.currentPoints][0],
+    path.keyPoints[path.currentPoints][1],
+    path.keyPoints[path.currentPoints + 1][0],
+    path.keyPoints[path.currentPoints + 1][1]
+  ).d;
+
+  if (startImg.xCenter > path.keyPoints[path.currentPoints + 1][0]) {
+    path.currentPoints += 1;
+  } else if (startImg.xCenter < path.keyPoints[path.currentPoints][0]) {
+    path.currentPoints -= 1;
+  } else if (startImg.xCenter >= 850) {
+    check();
+    return;
+  }
+  if (distance > 50) {
+    path.currentPoints = 0;
+    distance = 0;
+    document.onpointermove = null;
+
+    startImg.xCenter = 28;
+    startImg.yCenter = workspace.getBoundingClientRect().height / 2;
+    clearInterval(checkInterval);
+    clearTimeout(t);
+    refresh();
+    return;
+  }
+}
+
 const handleImgPartCaptured = (e, workspace = document.body) => {
   const element = e.currentTarget;
   if (element === null) return;
   element.classList.add("runner_state_captured");
+
+  timerForLevel();
 
   let clickLeftOffset,
     clickTopOffset = 0;
@@ -235,10 +272,11 @@ const handleImgPartCaptured = (e, workspace = document.body) => {
     if (leftShift > maxLeft) leftShift = maxLeft;
     else if (leftShift < minLeft) leftShift = minLeft;
 
-    //element.style.top = (topShift / workspaceHeight) * 100 + "%";
     element.style.top = topShift + "px";
-    //element.style.left = (leftShift / workspaceWidth) * 100 + "%";
     element.style.left = leftShift + "px";
+
+    startImg.xCenter = leftShift + 28;
+    startImg.yCenter = topShift + 33;
   }
 
   function handleElementReleased() {
@@ -252,10 +290,18 @@ function startGame() {
   init();
   rulesAdd();
   timer();
-  timerForLevel();
+  changeOpacity();
+
   startBtn.remove();
   controls.append(btnRefresh);
-  console.log(elemsWorkspace);
+  drawPath();
+}
+
+function changeOpacity() {
+  canvas.animate([{ opacity: 1 }, { opacity: 0 }], {
+    duration: 7000 - level * 100,
+  });
+  canvas.style.opacity = 0;
 }
 
 //очистка workspace
@@ -271,7 +317,11 @@ function refresh() {
   clear();
   init();
   rulesAdd();
-  timerForLevel();
+  startImg.xCenter = 28;
+  startImg.yCenter = workspace.getBoundingClientRect().height / 2;
+  canvas.style.opacity = 1;
+  drawPath();
+  changeOpacity();
 
   stopwatchForLevel = 0;
 }
@@ -279,10 +329,9 @@ function refresh() {
 function check() {
   let result = false;
 
-  //alert("Вы провели человечка за " + stopwatchForLevel/1000 + " сек.");
   clear();
 
-  if (Math.abs(time - stopwatchForLevel) <= 500) {
+  if (Math.abs(time - stopwatchForLevel) <= 850) {
     playerPoints += level++ * 100;
     result = true;
 
@@ -298,11 +347,21 @@ function check() {
       btnRefresh.textContent = "Заново";
       btnRefresh.style.fontSize = "1em";
     };
+
+    startImg.xCenter = 28;
+    startImg.yCenter = workspace.getBoundingClientRect().height / 2;
+    clearInterval(checkInterval);
   } else {
     playerPoints -= level * 100;
     if (level > 1) {
       level -= 1;
     }
+
+    alert(
+      "не то время " +
+        (stopwatchForLevel - (stopwatchForLevel % 1000)) / 1000 +
+        " сек!"
+    );
   }
 
   colorize(result);
@@ -312,7 +371,7 @@ function check() {
 }
 // победа
 function win() {
-  alert("ВЫ ПОБЕДИЛИ ЗА " + stopwatch);
+  //alert("ВЫ ПОБЕДИЛИ ЗА " + stopwatch);
 
   player.score = playerPoints;
   player.time = stopwatch;
@@ -328,8 +387,6 @@ function colorize(result) {
   let color = "red";
   if (result === true) {
     color = "green";
-    options1.duration = options2.duration - 150;
-    options2.duration = options1.duration - 150;
   }
 
   htmlPoints.animate(
@@ -350,7 +407,9 @@ function colorize(result) {
 function rulesAdd() {
   time = level * 1000 + 4000;
   htmlAction.textContent =
-    "Проводите человечка до дома за " + (time - (time % 1000)) / 1000 + " сек.";
+    "Проводите человечка до дома ровно за " +
+    (time - (time % 1000)) / 1000 +
+    " сек.";
 }
 
 // получить случайное число в диапазоне: [min; max)
@@ -384,7 +443,7 @@ function addmilliseconds() {
 }
 function timerForLevel() {
   t = setTimeout(addmilliseconds, 500);
-  //console.log(stopwatchForLevel);
+  console.log(stopwatchForLevel);
 }
 
 /*
@@ -420,5 +479,5 @@ function distancePointToLine(x, y, x1, y1, x2, y2) {
   dx = x - xx;
   dy = y - yy;
 
-  return {d: Math.sqrt(dx * dx + dy * dy) };
+  return { d: Math.sqrt(dx * dx + dy * dy) };
 }
