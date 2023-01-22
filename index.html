@@ -89,7 +89,9 @@
                             window.location.href = 'pages/game-3.html';
                             break;
                         default:
-                            alert("alert");
+                            player.game = gameSwitcher;
+                            localStorage.setItem("player", JSON.stringify(player));
+                            window.location.href = 'pages/game-1.html';
                     }
                 }
             };
